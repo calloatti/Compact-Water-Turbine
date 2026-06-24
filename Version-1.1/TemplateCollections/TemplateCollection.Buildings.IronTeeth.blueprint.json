@@ -1,0 +1,8 @@
+{
+  "TemplateCollectionSpec": {
+    "CollectionId": "Buildings.IronTeeth",
+    "Blueprints#append": [
+      "Buildings/Power/CompactWaterTurbine/CompactWaterTurbine.IronTeeth.blueprint"
+    ]
+  }
+}
