@@ -27,10 +27,12 @@ namespace Calloatti.CompactWaterTurbine
 
     private float _sampleTimer = 0f;
     private float _cachedHead = 0f;
+    private float _overflowPressureFactor = 20f; // Fallback, will be overwritten by the true game spec
 
     private readonly ITickService _tickService;
     private readonly IThreadSafeWaterMap _threadSafeWaterMap;
     private readonly CompactWaterTurbineSynchronizer _synchronizer;
+    private readonly ISpecService _specService;
 
     private MechanicalNode _mechanicalNode;
     private WaterInput _waterInput;
@@ -50,11 +52,13 @@ namespace Calloatti.CompactWaterTurbine
     public float MaxFlowRate => _spec.MaxWaterPerSecond;
     public bool IsSynchronized { get; private set; } = true;
 
-    public CompactWaterTurbine(ITickService tickService, IThreadSafeWaterMap threadSafeWaterMap, CompactWaterTurbineSynchronizer synchronizer)
+    // INJECTED: ISpecService to pull the game's internal pressure physics variables
+    public CompactWaterTurbine(ITickService tickService, IThreadSafeWaterMap threadSafeWaterMap, CompactWaterTurbineSynchronizer synchronizer, ISpecService specService)
     {
       _tickService = tickService;
       _threadSafeWaterMap = threadSafeWaterMap;
       _synchronizer = synchronizer;
+      _specService = specService;
     }
 
     public void Awake()
@@ -65,6 +69,10 @@ namespace Calloatti.CompactWaterTurbine
       _spec = GetComponent<CompactWaterTurbineSpec>();
       _blockObject = GetComponent<BlockObject>();
       FlowRate = _spec.MaxWaterPerSecond;
+
+      // Pull the actual physical pressure multiplier from the game engine
+      _overflowPressureFactor = _specService.GetSingleSpec<WaterSimulatorSpec>().OverflowPressureFactor;
+
       DisableComponent();
     }
 
@@ -94,7 +102,6 @@ namespace Calloatti.CompactWaterTurbine
 
     public override void Tick()
     {
-      // 1. Sample water physical depth at intervals
       _sampleTimer += _tickService.TickIntervalInSeconds;
       if (_sampleTimer >= SampleIntervalSeconds)
       {
@@ -102,10 +109,8 @@ namespace Calloatti.CompactWaterTurbine
         _sampleTimer = 0f;
       }
 
-      // 2. Determine if the machine should formally be ON or OFF
       UpdateFlowState();
 
-      // 3. Move water if ON
       float rawEffectiveFlow = 0f;
       if (CanMoveWater)
       {
@@ -114,7 +119,6 @@ namespace Calloatti.CompactWaterTurbine
         rawEffectiveFlow = actuallyMoved / _tickService.TickIntervalInSeconds;
       }
 
-      // 4. Apply flywheel smoothing to bridge micro-droughts and animate spin-downs
       float rampRate = MaxFlowRate / RampDurationSeconds;
       EffectiveFlowRate = Mathf.MoveTowards(EffectiveFlowRate, rawEffectiveFlow, rampRate * _tickService.TickIntervalInSeconds);
 
@@ -123,14 +127,16 @@ namespace Calloatti.CompactWaterTurbine
 
     private void UpdateFlowState()
     {
-      // Hard cuts bypass all hysteresis
-      if (!_mechanicalNode.Active || !_waterOutput.HasSpaceForWater || !_waterInput.IsUnderwater)
+      // Calculate true available physical water mass
+      float intakeWaterAvailable = _threadSafeWaterMap.WaterDepth(_waterInput.Coordinates) + _threadSafeWaterMap.ColumnOverflow(_waterInput.Coordinates);
+      bool isIntakeSubmerged = intakeWaterAvailable > 0.001f;
+
+      if (!_mechanicalNode.Active || !isIntakeSubmerged)
       {
         _isWaterFlowActive = false;
         return;
       }
 
-      // Spatial Deadband Logic (The +0.5m buffer)
       if (!_isWaterFlowActive)
       {
         if (_cachedHead >= (_spec.MinWaterDrop + ActivationHeadBuffer))
@@ -150,13 +156,19 @@ namespace Calloatti.CompactWaterTurbine
     public float GetCurrentHead()
     {
       float inputHeight = _threadSafeWaterMap.WaterHeightOrFloor(_waterInput.Coordinates);
+      // FIXED: Multiply the physical compressed mass by the pressure factor to calculate true head in meters!
+      float inputPressure = _threadSafeWaterMap.ColumnOverflow(_waterInput.Coordinates) * _overflowPressureFactor;
+      float totalInputHead = inputHeight + inputPressure;
+
       float rawOutputHeight = _threadSafeWaterMap.WaterHeightOrFloor(_outputCoordinates);
+      // FIXED: Apply backpressure correctly for submerged outputs
+      float outputPressure = _threadSafeWaterMap.ColumnOverflow(_outputCoordinates) * _overflowPressureFactor;
+      float totalOutputHead = rawOutputHeight + outputPressure;
 
-      // Adjusted from + 0.5f (center) to + 1.0f (top of the block)
       float turbineTopHeight = _blockObject.Coordinates.z + 1.0f;
-      float effectiveOutputHeight = Mathf.Max(rawOutputHeight, turbineTopHeight);
+      float effectiveOutputHeight = Mathf.Max(totalOutputHead, turbineTopHeight);
 
-      return inputHeight - effectiveOutputHeight;
+      return totalInputHead - effectiveOutputHeight;
     }
 
     public float GetFlowCapacity()
@@ -218,23 +230,23 @@ namespace Calloatti.CompactWaterTurbine
 
     private float MoveWater(float waterAmount)
     {
-      float contamination = _waterInput.ContaminationPercentage;
-      float requestedClean = waterAmount * (1f - contamination);
-      float requestedContam = waterAmount * contamination;
+      float contamination = _threadSafeWaterMap.ColumnContamination(_waterInput.Coordinates);
 
-      float availableSpace = _waterOutput.AvailableSpace;
+      // We do NOT multiply by the pressure factor here, because we are moving physical volume, not height!
+      float availableDepth = _threadSafeWaterMap.WaterDepth(_waterInput.Coordinates) + _threadSafeWaterMap.ColumnOverflow(_waterInput.Coordinates);
 
-      float cleanLimit = Mathf.Min(requestedClean, _waterInput.DemandCleanWaterAmount(requestedClean));
-      float cleanMoved = Mathf.Max(0f, Mathf.Min(cleanLimit, availableSpace));
+      float totalToMove = Mathf.Min(waterAmount, availableDepth);
+      if (totalToMove <= 0f) return 0f;
 
-      float contamLimit = Mathf.Min(requestedContam, _waterInput.DemandContaminatedWaterAmount(requestedContam));
-      float contamMoved = Mathf.Max(0f, Mathf.Min(contamLimit, availableSpace - cleanMoved));
+      float cleanMoved = totalToMove * (1f - contamination);
+      float contamMoved = totalToMove * contamination;
 
-      _waterInput.RemoveCleanWater(cleanMoved);
-      _waterInput.RemoveContaminatedWater(contamMoved);
+      if (cleanMoved > 0f) _waterInput.RemoveCleanWater(cleanMoved);
+      if (contamMoved > 0f) _waterInput.RemoveContaminatedWater(contamMoved);
+
       _waterOutput.AddWater(cleanMoved, contamMoved);
 
-      return cleanMoved + contamMoved;
+      return totalToMove;
     }
 
     private void UpdatePowerGeneration(float currentEffectiveFlow, float head)

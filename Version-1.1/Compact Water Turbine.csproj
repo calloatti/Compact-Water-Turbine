@@ -10,6 +10,7 @@
   <ItemGroup>
     <Publicize Remove="Timberborn.BlueprintSystem" />
     <Publicize Include="Timberborn.CoreUI" />
+    <Publicize Include="Timberborn.WaterSystem" />
   </ItemGroup>
 
 </Project>

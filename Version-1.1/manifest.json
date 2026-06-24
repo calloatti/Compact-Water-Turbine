@@ -1,6 +1,6 @@
 {
     "Name": "Compact Water Turbine",
-    "Version": "1.1.0",
+    "Version": "1.2.0",
     "Id": "Calloatti.CompactWaterTurbine",
     "MinimumGameVersion": "1.1.0.0",
     "Description": "Adds a compact 1x1 turbine that generates power from flowing water.",

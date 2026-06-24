@@ -1,3 +1,9 @@
+1.2.0
+Added true pressurized flow support for enclosed tunnels and penstocks
+Fixed head calculation to correctly multiply tunnel overflow by OverflowPressureFactor
+Removed vanilla open-air intake checks to allow pulling from pressurized pipes
+Removed vanilla output capacity checks to allow discharging into flooded tailraces
+Added ISpecService injection to dynamically read engine physics variables
 1.1.0
 Added dynamic scaling to water jet physics
 Fixed particle fade-out clipping above water
