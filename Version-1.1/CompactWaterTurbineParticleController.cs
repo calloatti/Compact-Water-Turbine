@@ -12,7 +12,6 @@ namespace Calloatti.CompactWaterTurbine
 {
   public class CompactWaterTurbineParticleController : TickableComponent, IAwakableComponent, IInitializableEntity, IPostLoadableEntity
   {
-    // DYNAMIC PHYSICS TUNING
     public const float MaxFlowGravity = 0.69f;
     public const float MinFlowGravity = 1.0f;
 
@@ -73,7 +72,8 @@ namespace Calloatti.CompactWaterTurbine
 
     private void UpdateParticles()
     {
-      if (_turbine.CanMoveWater && _turbine.EffectiveFlowRate > 0f)
+      // NEW: We no longer check CanMoveWater. We stay ON until the smoothed residual flow drops to 0.
+      if (_turbine.EffectiveFlowRate > 0.01f)
       {
         if (_particleSystems != null)
         {
@@ -86,8 +86,6 @@ namespace Calloatti.CompactWaterTurbine
 
             float currentSpeed = Mathf.Lerp(MinHorizontalSpeed, MaxHorizontalSpeed, flowPercentage);
             float currentDensity = Mathf.Lerp(MinDensity, MaxDensity, flowPercentage);
-
-            // This is the dynamic gravity adjusting proportionately based on flow!
             float currentGravity = Mathf.Lerp(MinFlowGravity, MaxFlowGravity, flowPercentage);
 
             for (int i = 0; i < _particleSystems.Length; i++)

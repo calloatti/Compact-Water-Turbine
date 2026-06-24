@@ -17,10 +17,19 @@ The water flow can be adjusted from 0 to 0.5 m3/s
 Technical Specs
 
 Maximum Flow Rate: 0.5 m3s (Cubic Meters per Second)
-Minimum Drop Required: 1.0 Meter (Turbine will not activate without a 1m drop)
-Maximum Drop: 6.0 meters (Power generation maxes out at a 5m drop)
-Maximum Power generation: 600 hp at 0.5 m3s and drop 6.0 m or more
+Minimum Head to work: 1.0 meters (Turbine will stop working when head < 1 m)
+Minimum Head to start: 1.6 meters (Turbine will not start when head < 1.6 m)
+Maximum Drop: 5 meters (Power generation maxes out at a 5m drop)
+Maximum Power generation: 1000 hp at 0.5 m3s and 5.0 m or greater head
+
+The head is measured from the top of the turbine.
 
 How to Use
 
 Simply place the Compact Water Turbine at the edge of a canal or dam. Ensure the intake is submerged and there is at least a 1-block drop from the intake water level to the output water level. Connect your mechanical shafts to the housing, and let the gravity do the rest!
+
+Water Turbine Head Definition:
+
+The head of a water turbine is the height difference between the water entering the turbine and the water leaving it. It is a critical factor in determining the turbine's efficiency and the amount of power it can generate.
+
+https://github.com/calloatti/Compact-Water-Turbine

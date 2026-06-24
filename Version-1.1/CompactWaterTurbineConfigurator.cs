@@ -14,7 +14,6 @@ namespace Calloatti.CompactWaterTurbine
 
       Bind<CompactWaterTurbine>().AsTransient();
       Bind<CompactWaterTurbineParticleController>().AsTransient();
-      Bind<CompactWaterTurbineAnimator>().AsTransient(); // Added binding
       Bind<CompactWaterTurbineFragment>().AsSingleton();
 
       MultiBind<TemplateModule>().ToProvider(ProvideTemplateModule).AsSingleton();
@@ -25,7 +24,6 @@ namespace Calloatti.CompactWaterTurbine
     {
       TemplateModule.Builder builder = new TemplateModule.Builder();
       builder.AddDecorator<CompactWaterTurbineSpec, CompactWaterTurbine>();
-      builder.AddDecorator<CompactWaterTurbineSpec, CompactWaterTurbineAnimator>(); // Added decorator attachment
       builder.AddDecorator<CompactWaterTurbineParticleControllerSpec, CompactWaterTurbineParticleController>();
       builder.AddDecorator<CompactWaterTurbineParticleController, ParticlesCache>();
       return builder.Build();

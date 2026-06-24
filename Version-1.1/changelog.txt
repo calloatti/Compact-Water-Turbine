@@ -1,2 +1,13 @@
+1.1.0
+Added dynamic scaling to water jet physics
+Fixed particle fade-out clipping above water
+Added 4.0s flow smoothing ramp to prevent micro-stuttering
+Added 0.6m activation buffer to eliminate rapid on/off flickering
+Changed MaxWaterDrop to 5.0, power to 1000 HP
+Adjusted water drop measurement to top of turbine block
+Optimized water depth sampling interval to 1s
+Optimized particle engine updates with state caching
+Refactored Harmony patches to use zero-allocation TryGetComponent
+Fixed memory leak in synchronizer queue
 1.0.0
 Initial Release

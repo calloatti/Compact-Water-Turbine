@@ -20,13 +20,11 @@ namespace Calloatti.CompactWaterTurbine
     private static readonly PropertyKey<float> FlowRateKey = new PropertyKey<float>("FlowRate");
     private static readonly PropertyKey<bool> IsSynchronizedKey = new PropertyKey<bool>("IsSynchronized");
 
-    // DYNAMIC HYSTERESIS & OPTIMIZATION
-    private const float ActivationDelaySeconds = 2.0f;
-    private const float CooldownDelaySeconds = 3.0f;
+    // --- HYSTERESIS & SMOOTHING TUNING ---
     private const float SampleIntervalSeconds = 1.0f;
+    private const float ActivationHeadBuffer = 0.6f;
+    private const float RampDurationSeconds = 4.0f;
 
-    private float _activationTimer = 0f;
-    private float _cooldownTimer = 0f;
     private float _sampleTimer = 0f;
     private float _cachedHead = 0f;
 
@@ -46,6 +44,8 @@ namespace Calloatti.CompactWaterTurbine
 
     public bool CanMoveWater => _isWaterFlowActive;
     public float FlowRate { get; private set; }
+
+    // Smoothed output representing mechanical momentum
     public float EffectiveFlowRate { get; private set; }
     public float MaxFlowRate => _spec.MaxWaterPerSecond;
     public bool IsSynchronized { get; private set; } = true;
@@ -79,24 +79,22 @@ namespace Calloatti.CompactWaterTurbine
       _outputCoordinates = _blockObject.TransformCoordinates(outputSpec.WaterCoordinates);
 
       _sampleTimer = SampleIntervalSeconds;
-      _activationTimer = 0f;
-      _cooldownTimer = 0f;
       EnableComponent();
     }
 
     public void OnExitFinishedState()
     {
       DisableComponent();
+      EffectiveFlowRate = 0f;
       UpdatePowerGeneration(0f, 0f);
       _sampleTimer = 0f;
-      _activationTimer = 0f;
-      _cooldownTimer = 0f;
       _cachedHead = 0f;
       _isWaterFlowActive = false;
     }
 
     public override void Tick()
     {
+      // 1. Sample water physical depth at intervals
       _sampleTimer += _tickService.TickIntervalInSeconds;
       if (_sampleTimer >= SampleIntervalSeconds)
       {
@@ -104,59 +102,48 @@ namespace Calloatti.CompactWaterTurbine
         _sampleTimer = 0f;
       }
 
+      // 2. Determine if the machine should formally be ON or OFF
       UpdateFlowState();
 
+      // 3. Move water if ON
+      float rawEffectiveFlow = 0f;
       if (CanMoveWater)
       {
         float requestedWater = _tickService.TickIntervalInSeconds * GetFlowCapacity();
         float actuallyMoved = MoveWater(requestedWater);
+        rawEffectiveFlow = actuallyMoved / _tickService.TickIntervalInSeconds;
+      }
 
-        EffectiveFlowRate = actuallyMoved / _tickService.TickIntervalInSeconds;
-        UpdatePowerGeneration(EffectiveFlowRate, _cachedHead);
-      }
-      else
-      {
-        EffectiveFlowRate = 0f;
-        UpdatePowerGeneration(0f, 0f);
-      }
+      // 4. Apply flywheel smoothing to bridge micro-droughts and animate spin-downs
+      float rampRate = MaxFlowRate / RampDurationSeconds;
+      EffectiveFlowRate = Mathf.MoveTowards(EffectiveFlowRate, rawEffectiveFlow, rampRate * _tickService.TickIntervalInSeconds);
+
+      UpdatePowerGeneration(EffectiveFlowRate, _cachedHead);
     }
 
     private void UpdateFlowState()
     {
+      // Hard cuts bypass all hysteresis
       if (!_mechanicalNode.Active || !_waterOutput.HasSpaceForWater || !_waterInput.IsUnderwater)
       {
         _isWaterFlowActive = false;
-        _activationTimer = 0f;
         return;
       }
 
-      if (_cooldownTimer > 0f)
+      // Spatial Deadband Logic (The +0.5m buffer)
+      if (!_isWaterFlowActive)
       {
-        _cooldownTimer -= _tickService.TickIntervalInSeconds;
-        _activationTimer = 0f;
-        _isWaterFlowActive = false;
-        return;
-      }
-
-      if (_cachedHead >= _spec.MinWaterDrop)
-      {
-        if (!_isWaterFlowActive)
+        if (_cachedHead >= (_spec.MinWaterDrop + ActivationHeadBuffer))
         {
-          _activationTimer += _tickService.TickIntervalInSeconds;
-          if (_activationTimer >= ActivationDelaySeconds)
-          {
-            _isWaterFlowActive = true;
-          }
+          _isWaterFlowActive = true;
         }
       }
       else
       {
-        if (_isWaterFlowActive)
+        if (_cachedHead < _spec.MinWaterDrop)
         {
           _isWaterFlowActive = false;
-          _cooldownTimer = CooldownDelaySeconds;
         }
-        _activationTimer = 0f;
       }
     }
 
@@ -165,8 +152,9 @@ namespace Calloatti.CompactWaterTurbine
       float inputHeight = _threadSafeWaterMap.WaterHeightOrFloor(_waterInput.Coordinates);
       float rawOutputHeight = _threadSafeWaterMap.WaterHeightOrFloor(_outputCoordinates);
 
-      float turbineCenterHeight = _blockObject.Coordinates.z + 0.5f;
-      float effectiveOutputHeight = Mathf.Max(rawOutputHeight, turbineCenterHeight);
+      // Adjusted from + 0.5f (center) to + 1.0f (top of the block)
+      float turbineTopHeight = _blockObject.Coordinates.z + 1.0f;
+      float effectiveOutputHeight = Mathf.Max(rawOutputHeight, turbineTopHeight);
 
       return inputHeight - effectiveOutputHeight;
     }
@@ -251,13 +239,14 @@ namespace Calloatti.CompactWaterTurbine
 
     private void UpdatePowerGeneration(float currentEffectiveFlow, float head)
     {
-      if (!_isWaterFlowActive || MaxFlowRate <= 0f)
+      if (MaxFlowRate <= 0f || currentEffectiveFlow <= 0.001f)
       {
         _mechanicalNode.SetOutputMultiplier(0f);
         return;
       }
 
-      float headMultiplier = Mathf.Clamp01((head - _spec.MinWaterDrop) / (_spec.MaxWaterDrop - _spec.MinWaterDrop));
+      float safeHead = Mathf.Max(head, _spec.MinWaterDrop);
+      float headMultiplier = Mathf.Clamp01((safeHead - _spec.MinWaterDrop) / (_spec.MaxWaterDrop - _spec.MinWaterDrop));
       float flowMultiplier = currentEffectiveFlow / MaxFlowRate;
 
       _mechanicalNode.SetOutputMultiplier(headMultiplier * flowMultiplier);
