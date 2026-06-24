@@ -1,6 +1,8 @@
 Compact Water Turbine
 
-https://steamcommunity.com/sharedfiles/filedetails/?id=
+https://steamcommunity.com/sharedfiles/filedetails/?id=3750784853
+
+"Beavers soon realized that if a pump uses power to move water, water can move a pump to make power."
 
 The Compact Water Turbine is a highly efficient, 1x1 mechanical power generator designed for precision engineering and tight settlement layouts. Instead of relying on massive, slow-moving water wheels, this turbine harnesses the pressure of falling water to generate scalable mechanical power.
 
