@@ -22,7 +22,7 @@ Minimum Head to start: 1.6 meters (Turbine will not start when head < 1.6 m)
 Maximum Drop: 5 meters (Power generation maxes out at a 5m drop)
 Maximum Power generation: 1000 hp at 0.5 m3s and 5.0 m or greater head
 
-The head is measured from the top of the turbine.
+How the head is measured: The turbine simply takes the effective water height at the intake and subtracts the effective water height at the exhaust.
 
 How to Use
 

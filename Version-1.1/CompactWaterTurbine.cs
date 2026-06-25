@@ -48,8 +48,11 @@ namespace Calloatti.CompactWaterTurbine
     public bool CanMoveWater => _isWaterFlowActive;
     public float FlowRate { get; private set; }
 
-    // Smoothed output representing mechanical momentum and valve position
     public float EffectiveFlowRate { get; private set; }
+
+    // NEW: Expose the current contamination level for the particle controller
+    public float CurrentContamination { get; private set; }
+
     public float MaxFlowRate => _spec.MaxWaterPerSecond;
     public bool IsSynchronized { get; private set; } = true;
 
@@ -94,6 +97,7 @@ namespace Calloatti.CompactWaterTurbine
     {
       DisableComponent();
       EffectiveFlowRate = 0f;
+      CurrentContamination = 0f;
       UpdatePowerGeneration(0f, 0f);
       _sampleTimer = 0f;
       _cachedHead = 0f;
@@ -111,21 +115,17 @@ namespace Calloatti.CompactWaterTurbine
 
       UpdateFlowState();
 
-      // 1. Determine target flow (is the valve trying to be fully open or fully closed?)
       float targetFlow = _isWaterFlowActive ? FlowRate : 0f;
 
-      // 2. Smoothly adjust the mechanical valve/flywheel over 4 seconds
       float rampRate = MaxFlowRate / RampDurationSeconds;
       EffectiveFlowRate = Mathf.MoveTowards(EffectiveFlowRate, targetFlow, rampRate * _tickService.TickIntervalInSeconds);
 
-      // 3. Physically move the water based on the current partially-open valve state
       if (EffectiveFlowRate > 0.001f)
       {
         float requestedWater = _tickService.TickIntervalInSeconds * EffectiveFlowRate;
         MoveWater(requestedWater);
       }
 
-      // 4. Power output is driven by the smooth mechanical momentum
       UpdatePowerGeneration(EffectiveFlowRate, _cachedHead);
     }
 
@@ -231,6 +231,9 @@ namespace Calloatti.CompactWaterTurbine
     private float MoveWater(float waterAmount)
     {
       float contamination = _threadSafeWaterMap.ColumnContamination(_waterInput.Coordinates);
+
+      // Update the exposed property for the particle controller
+      CurrentContamination = contamination;
 
       float availableDepth = _threadSafeWaterMap.WaterDepth(_waterInput.Coordinates) + _threadSafeWaterMap.ColumnOverflow(_waterInput.Coordinates);
 
