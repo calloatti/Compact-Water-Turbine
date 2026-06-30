@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>compactwaterturbine</AssemblyName>
+    <RootNamespace>Calloatti.compactwaterturbine</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="CommonModSettings.props" />
+  
+  <ItemGroup>
+    <Publicize Remove="Timberborn.BlueprintSystem" />
+    <Publicize Include="Timberborn.CoreUI" />
+    <Publicize Include="Timberborn.WaterSystem" />
+  </ItemGroup>
+
+</Project>

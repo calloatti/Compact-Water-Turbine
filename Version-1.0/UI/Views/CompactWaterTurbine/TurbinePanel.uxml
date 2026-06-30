@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:cui="Timberborn.CoreUI" xmlns:uf="Timberborn.UIFormatters" xsi:http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="/Assets/Resources/UI/Views/Core/CoreStyle.uss" />
+    <Style src="/Assets/Resources/UI/Views/Common/CommonStyle.uss" />
+    <Style src="/Assets/Resources/UI/Views/Common/EntityPanel/EntityPanelCommonStyle.uss" />
+    <Style src="/Assets/Resources/UI/Views/Game/EntityPanel/EntityPanelGameStyle.uss" />
+    
+    <cui:NineSliceVisualElement name="WaterMoverFragment" class="entity-sub-panel water-mover-fragment bg-sub-box--green">
+        <cui:LocalizableLabel name="Title" text="Title" text-loc-key="Building.FluidDump.ToggleLabel" class="entity-panel__text water-mover-fragment__title" />
+        
+        <ui:VisualElement name="EfficiencyWrapper" style="margin-top: 4px; margin-bottom: 4px;">
+            <cui:LocalizableLabel name="EfficiencyLabel" class="entity-panel__text" style="margin-top: 6px; margin-bottom: 2px;" />
+            <uf:PreciseSlider name="Efficiency" />
+        </ui:VisualElement>
+    </cui:NineSliceVisualElement>
+</ui:UXML>
