@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using Timberborn.BaseComponentSystem;
 using Timberborn.BlueprintSystem;
 using Timberborn.EntitySystem;
@@ -6,12 +7,16 @@ using Timberborn.Particles;
 using Timberborn.Persistence;
 using Timberborn.TemplateAttachmentSystem;
 using Timberborn.TickSystem;
+using Timberborn.WaterBuildingsUI;
 using UnityEngine;
 
 namespace Calloatti.CompactWaterTurbine
 {
   public class CompactWaterTurbineParticleController : TickableComponent, IAwakableComponent, IInitializableEntity, IPostLoadableEntity
   {
+    // GLOBAL REGISTRY: Exactly like CustomParticleLengths in your pump mod!
+    public static Dictionary<WaterOutputParticleLength, float> CustomParticleLengths = new Dictionary<WaterOutputParticleLength, float>();
+
     public const float MaxFlowGravity = 0.69f;
     public const float MinFlowGravity = 1.0f;
 
@@ -21,13 +26,21 @@ namespace Calloatti.CompactWaterTurbine
     private const float MaxHorizontalSpeed = 0.71f;
     private const float MinHorizontalSpeed = 0.1f;
 
-    // Static multiplier to permanently thicken the jet
-    private const float PermanentSizeMultiplier = 1.5f;
+    private const float PermanentSizeMultiplier = 1.6f;
 
-    // Exact native visual color representation of Contaminated Badwater from Timberborn's engine assets
-    private static readonly Color BadwaterColor = new Color(0.46f, 0.15f, 0.09f, 1.0f);
+    private const float UnityGravity = 9.81f;
+    private const float MinimumLifetime = 0.1f;
+
+    // Exact colors extracted from Timberborn 1.1 asset blueprints
+    //private static readonly Color DeepCleanWaterColor = new Color(0.196911722f, 0.57316947f, 0.7075472f, 1.0f);
+    //private static readonly Color BadwaterColor = new Color(0.9529412f, 0.321568638f, 0.192156866f, 1.0f);
+
+    // Exact colors extracted from Timberborn 1.1 asset blueprints (Darkened by 30%)
+    private static readonly Color DeepCleanWaterColor = new Color(0.1378382f, 0.4012186f, 0.4952830f, 1.0f);
+    private static readonly Color BadwaterColor = new Color(0.6670588f, 0.2250980f, 0.1345098f, 1.0f);
 
     private CompactWaterTurbine _turbine;
+    private WaterOutputParticleLength _vanillaLengthComponent;
     private ParticlesRunner _particlesRunner;
     private ParticleSystem[] _particleSystems;
 
@@ -38,15 +51,19 @@ namespace Calloatti.CompactWaterTurbine
     private float _lastFlowPercentage = -1f;
     private float _lastContamination = -1f;
 
+    private float _lastWaterSurfaceHeight = -1f;
+    private float _cachedLifetime = MinimumLifetime;
+    private float _cachedGravity = MinFlowGravity;
+
     public void Awake()
     {
       _turbine = GetComponent<CompactWaterTurbine>();
+      _vanillaLengthComponent = GetComponent<WaterOutputParticleLength>();
     }
 
     public void InitializeEntity()
     {
       ImmutableArray<string> attachmentIds = GetComponent<CompactWaterTurbineParticleControllerSpec>().AttachmentIds;
-
       _particlesRunner = GetComponent<ParticlesCache>().GetParticlesRunner(attachmentIds);
 
       if (attachmentIds.Length > 0)
@@ -64,10 +81,8 @@ namespace Calloatti.CompactWaterTurbine
           {
             _initialStartSpeeds[i] = _particleSystems[i].main.startSpeedMultiplier;
             _initialEmissionRates[i] = _particleSystems[i].emission.rateOverTimeMultiplier;
-            // Cache the native clean water color of the original prefab particles
             _initialColors[i] = _particleSystems[i].main.startColor.color;
 
-            // Apply the static size multiplier once during initialization
             var main = _particleSystems[i].main;
             main.startSizeMultiplier *= PermanentSizeMultiplier;
           }
@@ -89,45 +104,76 @@ namespace Calloatti.CompactWaterTurbine
     {
       if (_turbine.EffectiveFlowRate > 0.01f)
       {
-        if (_particleSystems != null)
+        if (_particleSystems != null && _particleSystems.Length > 0)
         {
           float flowPercentage = _turbine.MaxFlowRate > 0f ? (_turbine.EffectiveFlowRate / _turbine.MaxFlowRate) : 0f;
           flowPercentage = Mathf.Clamp(flowPercentage, 0.01f, 1.0f);
 
           float currentContamination = _turbine.CurrentContamination;
+          float waterSurfaceAbsoluteHeight = _turbine.GetWaterSurfaceAbsoluteHeight();
 
-          // Only recalculate all particle properties if either flow or mixture has changed to save CPU
-          if (Mathf.Abs(_lastFlowPercentage - flowPercentage) > 0.005f || Mathf.Abs(_lastContamination - currentContamination) > 0.005f)
+          bool fluidPropsChanged = Mathf.Abs(_lastFlowPercentage - flowPercentage) > 0.005f || Mathf.Abs(_lastContamination - currentContamination) > 0.005f;
+          bool heightChanged = Mathf.Abs(_lastWaterSurfaceHeight - waterSurfaceAbsoluteHeight) > 0.01f;
+
+          if (fluidPropsChanged || heightChanged)
           {
             _lastFlowPercentage = flowPercentage;
             _lastContamination = currentContamination;
+            _lastWaterSurfaceHeight = waterSurfaceAbsoluteHeight;
 
-            float currentSpeed = Mathf.Lerp(MinHorizontalSpeed, MaxHorizontalSpeed, flowPercentage);
-            float currentDensity = Mathf.Lerp(MinDensity, MaxDensity, flowPercentage);
-            float currentGravity = Mathf.Lerp(MinFlowGravity, MaxFlowGravity, flowPercentage);
+            _cachedGravity = Mathf.Lerp(MinFlowGravity, MaxFlowGravity, flowPercentage);
 
-            for (int i = 0; i < _particleSystems.Length; i++)
+            float spoutAbsoluteHeight = _particleSystems[0].transform.position.y;
+            float verticalDistance = Mathf.Max(0f, spoutAbsoluteHeight - waterSurfaceAbsoluteHeight);
+
+            float effectiveGravity = UnityGravity * _cachedGravity;
+            float calculatedLifetime = Mathf.Sqrt((2f * verticalDistance) / effectiveGravity);
+
+            _cachedLifetime = Mathf.Max(MinimumLifetime, calculatedLifetime);
+          }
+
+          // REGISTER LIFETIME: Put the lifetime value into our static dictionary
+          if (_vanillaLengthComponent != null)
+          {
+            CustomParticleLengths[_vanillaLengthComponent] = _cachedLifetime;
+          }
+
+          float currentSpeed = Mathf.Lerp(MinHorizontalSpeed, MaxHorizontalSpeed, flowPercentage);
+          float currentDensity = Mathf.Lerp(MinDensity, MaxDensity, flowPercentage);
+
+          for (int i = 0; i < _particleSystems.Length; i++)
+          {
+            var main = _particleSystems[i].main;
+            main.startLifetime = _cachedLifetime;
+            main.gravityModifierMultiplier = _cachedGravity;
+
+            if (fluidPropsChanged)
             {
-              var main = _particleSystems[i].main;
               var emission = _particleSystems[i].emission;
 
               main.startSpeedMultiplier = _initialStartSpeeds[i] * currentSpeed;
               emission.rateOverTimeMultiplier = _initialEmissionRates[i] * currentDensity;
-              main.gravityModifierMultiplier = currentGravity;
 
-              // Interpolate smoothly between clean water and badwater based on the physical simulation ratio
-              Color targetColor = Color.Lerp(_initialColors[i], BadwaterColor, currentContamination);
+              // Force the 1.0 engine to blend using the precise 1.1 blueprint color gradient
+              Color targetColor = Color.Lerp(DeepCleanWaterColor, BadwaterColor, currentContamination);
               main.startColor = new ParticleSystem.MinMaxGradient(targetColor);
             }
           }
         }
-
         _particlesRunner.Play();
       }
       else
       {
         _lastFlowPercentage = -1f;
         _lastContamination = -1f;
+        _lastWaterSurfaceHeight = -1f;
+
+        // CLEANUP: Remove from registry when flow stops
+        if (_vanillaLengthComponent != null)
+        {
+          CustomParticleLengths.Remove(_vanillaLengthComponent);
+        }
+
         _particlesRunner.Stop();
       }
     }

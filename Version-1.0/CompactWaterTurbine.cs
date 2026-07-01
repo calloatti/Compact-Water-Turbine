@@ -166,6 +166,11 @@ namespace Calloatti.CompactWaterTurbine
       return FlowRate;
     }
 
+    public float GetWaterSurfaceAbsoluteHeight()
+    {
+      return _threadSafeWaterMap.WaterHeightOrFloor(_outputCoordinates);
+    }
+
     public void Save(IEntitySaver entitySaver)
     {
       IObjectSaver component = entitySaver.GetComponent(CompactWaterTurbineKey);

@@ -6,3 +6,5 @@ Building.CompactWaterTurbine.CurrentDrop,Current Water Drop: {0},
 Building.CompactWaterTurbine.RealFlow,Current Flow: {0},
 Building.CompactWaterTurbine.Synchronize,Synchronize with adjacent Turbines,
 Building.CompactWaterTurbine.FlowRate,Flow rate: {0}
+Building.ImpermeablePowerShaft.Description,Transfers power. Blocks water.,
+Building.ImpermeablePowerShaft.DisplayName,Impermeable Power Shaft,Must be consistent with Building.PowerShaft.DisplayName. An axle which transfers power embedded in a block of wood which keeps it watertight.

@@ -1,3 +1,9 @@
+Game Version:  1.1.0.2 - Mod Version: 1.6.0
+- Version bump to match 1.0 mod version
+--------------------------------------------------------------------------------
+Game Version: 1.1.0.2 - Mod Version: 1.5.0
+- Refactored particle lifetime calculations
+--------------------------------------------------------------------------------
 Game Version: 1.1.0.2 - Mod Version: 1.4.0
 - Switched to using the WaterDrops prefab
 - Changes to output water jet handling

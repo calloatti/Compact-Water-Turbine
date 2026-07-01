@@ -1,3 +1,9 @@
+Game Version: 1.0.13.1 - Mod Version: 1.6.0
+- Backported the Impermeable Power Shaft from experimental 1.1
+--------------------------------------------------------------------------------
+Game Version: 1.0.13.1 - Mod Version: 1.5.0
+- Refactored particle lifetime calculations
+--------------------------------------------------------------------------------
 Game Version: 1.0.13.1 - Mod Version: 1.4.0
 - Version bump to match 1.1 mod version
 --------------------------------------------------------------------------------

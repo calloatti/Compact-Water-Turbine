@@ -1,4 +1,5 @@
-﻿using Timberborn.ModManagerScene;
+﻿using HarmonyLib;
+using Timberborn.ModManagerScene;
 using UnityEngine;
 
 namespace Calloatti.CompactWaterTurbine
@@ -9,7 +10,13 @@ namespace Calloatti.CompactWaterTurbine
 
     public void StartMod(IModEnvironment modEnvironment)
     {
-      Debug.Log($"[{ModId}] Mod started successfully.");
+      // Instantiate Harmony using your unique Mod ID
+      Harmony harmony = new Harmony(ModId);
+
+      // Tell Harmony to find all [HarmonyPatch] attributes in your mod and apply them
+      harmony.PatchAll();
+
+      Debug.Log($"[{ModId}] Mod started successfully and Harmony patches applied.");
     }
   }
 }
