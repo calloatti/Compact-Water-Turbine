@@ -173,7 +173,7 @@
     "Attachments": [
       {
         "AttachmentId": "Water",
-        "Prefab": "Buildings/Water/CompactMechanicalPump/CompactPumpWaterDrops",
+        "Prefab": "Environment/WaterDrops/WaterDrops",
         "Parent": "#Finished",
         "Position": {
           "X": 0.5,
@@ -193,12 +193,6 @@
         "CreateInstantly": true
       }
     ]
-  },
-  "WaterOutputParticleSpec": {
-    "AttachmentId": "Water",
-    "SpawnOffset": -0.5,
-    "FadeDistance": 0.45,
-    "MinimumLifetime": 0.1
   },
   "CompactWaterTurbineParticleControllerSpec": {
     "AttachmentIds": [

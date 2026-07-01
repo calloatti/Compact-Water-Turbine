@@ -1,28 +1,26 @@
+Game Version: 1.1.0.2 - Mod Version: 1.4.0
+- Switched to using the WaterDrops prefab
+- Changes to output water jet handling
 --------------------------------------------------------------------------------
-Game Version: 1.1.0.0
-Mod Version: 1.3.1
+Game Version: 1.1.0.0 - Mod Version: 1.3.1
 - Fixed water jet color bug
 --------------------------------------------------------------------------------
-Game Version: 1.1.0.0
-Mod Version: 1.3.0
+Game Version: 1.1.0.0 - Mod Version: 1.3.0
 - Migrated fluid transfer logic to use the core IWaterService API, completely bypassing restrictive vanilla pump components
 - Fixed physical water transfer to properly follow the 4-second mechanical smoothing ramp (valves now open and close progressively)
 - Added strict mathematical clamping to the fluid transfer to guarantee zero water multiplication/voiding under extreme pressure
 --------------------------------------------------------------------------------
-Game Version: 1.1.0.0
-Mod Version: 1.2.1
+Game Version: 1.1.0.0 - Mod Version: 1.2.1
 - Changed GetCurrentHead
 --------------------------------------------------------------------------------
-Game Version: 1.1.0.0
-Mod Version: 1.2.0
+Game Version: 1.1.0.0 - Mod Version: 1.2.0
 - Added true pressurized flow support for enclosed tunnels and penstocks
 - Fixed head calculation to correctly multiply tunnel overflow by OverflowPressureFactor
 - Removed vanilla open-air intake checks to allow pulling from pressurized pipes
 - Removed vanilla output capacity checks to allow discharging into flooded tailraces
 - Added ISpecService injection to dynamically read engine physics variables
 --------------------------------------------------------------------------------
-Game Version: 1.1.0.0
-Mod Version: 1.1.0
+Game Version: 1.1.0.0 - Mod Version: 1.1.0
 - Added dynamic scaling to water jet physics
 - Fixed particle fade-out clipping above water
 - Added 4.0s flow smoothing ramp to prevent micro-stuttering
@@ -34,6 +32,6 @@ Mod Version: 1.1.0
 - Refactored Harmony patches to use zero-allocation TryGetComponent
 - Fixed memory leak in synchronizer queue
 --------------------------------------------------------------------------------
-Game Version: 1.1.0.0
-Mod Version: 1.0.0
+Game Version: 1.1.0.0 - Mod Version: 1.0.0
 - Initial Release
+--------------------------------------------------------------------------------

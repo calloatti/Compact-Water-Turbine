@@ -6,6 +6,7 @@ using Timberborn.Particles;
 using Timberborn.Persistence;
 using Timberborn.TemplateAttachmentSystem;
 using Timberborn.TickSystem;
+using Timberborn.WaterBuildings;
 using UnityEngine;
 
 namespace Calloatti.CompactWaterTurbine
@@ -21,10 +22,14 @@ namespace Calloatti.CompactWaterTurbine
     private const float MaxHorizontalSpeed = 0.71f;
     private const float MinHorizontalSpeed = 0.1f;
 
-    // Exact native visual color representation of Contaminated Badwater from Timberborn's engine assets
+    private const float PermanentSizeMultiplier = 3.0f;
+    private const float UnityGravity = 9.81f;
+    private const float MinimumLifetime = 0.1f;
+
     private static readonly Color BadwaterColor = new Color(0.46f, 0.15f, 0.09f, 1.0f);
 
     private CompactWaterTurbine _turbine;
+    private WaterOutput _waterOutput;
     private ParticlesRunner _particlesRunner;
     private ParticleSystem[] _particleSystems;
 
@@ -38,12 +43,12 @@ namespace Calloatti.CompactWaterTurbine
     public void Awake()
     {
       _turbine = GetComponent<CompactWaterTurbine>();
+      _waterOutput = GetComponent<WaterOutput>();
     }
 
     public void InitializeEntity()
     {
       ImmutableArray<string> attachmentIds = GetComponent<CompactWaterTurbineParticleControllerSpec>().AttachmentIds;
-
       _particlesRunner = GetComponent<ParticlesCache>().GetParticlesRunner(attachmentIds);
 
       if (attachmentIds.Length > 0)
@@ -61,8 +66,10 @@ namespace Calloatti.CompactWaterTurbine
           {
             _initialStartSpeeds[i] = _particleSystems[i].main.startSpeedMultiplier;
             _initialEmissionRates[i] = _particleSystems[i].emission.rateOverTimeMultiplier;
-            // Cache the native clean water color of the original prefab particles
             _initialColors[i] = _particleSystems[i].main.startColor.color;
+
+            var main = _particleSystems[i].main;
+            main.startSizeMultiplier *= PermanentSizeMultiplier;
           }
         }
       }
@@ -82,33 +89,53 @@ namespace Calloatti.CompactWaterTurbine
     {
       if (_turbine.EffectiveFlowRate > 0.01f)
       {
-        if (_particleSystems != null)
+        if (_particleSystems != null && _particleSystems.Length > 0)
         {
           float flowPercentage = _turbine.MaxFlowRate > 0f ? (_turbine.EffectiveFlowRate / _turbine.MaxFlowRate) : 0f;
           flowPercentage = Mathf.Clamp(flowPercentage, 0.01f, 1.0f);
 
           float currentContamination = _turbine.CurrentContamination;
 
-          // Only recalculate all particle properties if either flow or mixture has changed to save CPU
-          if (Mathf.Abs(_lastFlowPercentage - flowPercentage) > 0.005f || Mathf.Abs(_lastContamination - currentContamination) > 0.005f)
+          float currentGravity = Mathf.Lerp(MinFlowGravity, MaxFlowGravity, flowPercentage);
+
+          // Read the precise visual Y height of the emitter nozzle asset
+          float spoutAbsoluteHeight = _particleSystems[0].transform.position.y;
+          float waterSurfaceAbsoluteHeight = _turbine.GetWaterSurfaceAbsoluteHeight();
+
+          float verticalDistance = Mathf.Max(0f, spoutAbsoluteHeight - waterSurfaceAbsoluteHeight);
+
+          float effectiveGravity = UnityGravity * currentGravity;
+          float calculatedLifetime = Mathf.Sqrt((2f * verticalDistance) / effectiveGravity);
+
+          // Keep the 75% immersion formula intact
+          calculatedLifetime /= 0.75f;
+          float finalLifetime = Mathf.Max(MinimumLifetime, calculatedLifetime);
+
+          bool fluidPropsChanged = Mathf.Abs(_lastFlowPercentage - flowPercentage) > 0.005f || Mathf.Abs(_lastContamination - currentContamination) > 0.005f;
+
+          if (fluidPropsChanged)
           {
             _lastFlowPercentage = flowPercentage;
             _lastContamination = currentContamination;
+          }
 
-            float currentSpeed = Mathf.Lerp(MinHorizontalSpeed, MaxHorizontalSpeed, flowPercentage);
-            float currentDensity = Mathf.Lerp(MinDensity, MaxDensity, flowPercentage);
-            float currentGravity = Mathf.Lerp(MinFlowGravity, MaxFlowGravity, flowPercentage);
+          float currentSpeed = Mathf.Lerp(MinHorizontalSpeed, MaxHorizontalSpeed, flowPercentage);
+          float currentDensity = Mathf.Lerp(MinDensity, MaxDensity, flowPercentage);
 
-            for (int i = 0; i < _particleSystems.Length; i++)
+          for (int i = 0; i < _particleSystems.Length; i++)
+          {
+            var main = _particleSystems[i].main;
+
+            main.startLifetime = finalLifetime;
+            main.gravityModifierMultiplier = currentGravity;
+
+            if (fluidPropsChanged)
             {
-              var main = _particleSystems[i].main;
               var emission = _particleSystems[i].emission;
 
               main.startSpeedMultiplier = _initialStartSpeeds[i] * currentSpeed;
               emission.rateOverTimeMultiplier = _initialEmissionRates[i] * currentDensity;
-              main.gravityModifierMultiplier = currentGravity;
 
-              // Interpolate smoothly between clean water and badwater based on the physical simulation ratio
               Color targetColor = Color.Lerp(_initialColors[i], BadwaterColor, currentContamination);
               main.startColor = new ParticleSystem.MinMaxGradient(targetColor);
             }

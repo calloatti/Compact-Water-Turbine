@@ -20,7 +20,6 @@ namespace Calloatti.CompactWaterTurbine
     private static readonly PropertyKey<float> FlowRateKey = new PropertyKey<float>("FlowRate");
     private static readonly PropertyKey<bool> IsSynchronizedKey = new PropertyKey<bool>("IsSynchronized");
 
-    // --- HYSTERESIS & SMOOTHING TUNING ---
     private const float SampleIntervalSeconds = 1.0f;
     private const float ActivationHeadBuffer = 0.6f;
     private const float RampDurationSeconds = 4.0f;
@@ -42,17 +41,12 @@ namespace Calloatti.CompactWaterTurbine
     private BlockObject _blockObject;
 
     private Vector3Int _outputCoordinates;
-
     private bool _isWaterFlowActive;
 
     public bool CanMoveWater => _isWaterFlowActive;
     public float FlowRate { get; private set; }
-
     public float EffectiveFlowRate { get; private set; }
-
-    // NEW: Expose the current contamination level for the particle controller
     public float CurrentContamination { get; private set; }
-
     public float MaxFlowRate => _spec.MaxWaterPerSecond;
     public bool IsSynchronized { get; private set; } = true;
 
@@ -73,9 +67,7 @@ namespace Calloatti.CompactWaterTurbine
       _spec = GetComponent<CompactWaterTurbineSpec>();
       _blockObject = GetComponent<BlockObject>();
       FlowRate = _spec.MaxWaterPerSecond;
-
       _overflowPressureFactor = _specService.GetSingleSpec<WaterSimulatorSpec>().OverflowPressureFactor;
-
       DisableComponent();
     }
 
@@ -88,7 +80,6 @@ namespace Calloatti.CompactWaterTurbine
     {
       WaterOutputSpec outputSpec = GetComponent<WaterOutputSpec>();
       _outputCoordinates = _blockObject.TransformCoordinates(outputSpec.WaterCoordinates);
-
       _sampleTimer = SampleIntervalSeconds;
       EnableComponent();
     }
@@ -116,7 +107,6 @@ namespace Calloatti.CompactWaterTurbine
       UpdateFlowState();
 
       float targetFlow = _isWaterFlowActive ? FlowRate : 0f;
-
       float rampRate = MaxFlowRate / RampDurationSeconds;
       EffectiveFlowRate = Mathf.MoveTowards(EffectiveFlowRate, targetFlow, rampRate * _tickService.TickIntervalInSeconds);
 
@@ -160,12 +150,10 @@ namespace Calloatti.CompactWaterTurbine
     {
       float inputWaterLevel = _threadSafeWaterMap.WaterHeightOrFloor(_waterInput.Coordinates)
                               + (_threadSafeWaterMap.ColumnOverflow(_waterInput.Coordinates) * _overflowPressureFactor);
-
       float effectiveInputHeight = Mathf.Max(_waterInput.Coordinates.z, inputWaterLevel);
 
       float outputWaterLevel = _threadSafeWaterMap.WaterHeightOrFloor(_outputCoordinates)
                                + (_threadSafeWaterMap.ColumnOverflow(_outputCoordinates) * _overflowPressureFactor);
-
       float effectiveOutputHeight = Mathf.Max(_outputCoordinates.z, outputWaterLevel);
 
       return effectiveInputHeight - effectiveOutputHeight;
@@ -174,8 +162,13 @@ namespace Calloatti.CompactWaterTurbine
     public float GetFlowCapacity()
     {
       if (!_isWaterFlowActive) return 0f;
-
       return FlowRate;
+    }
+
+    // Returns the absolute physical height of the fluid surface (or ground floor if dry)
+    public float GetWaterSurfaceAbsoluteHeight()
+    {
+      return _threadSafeWaterMap.WaterHeightOrFloor(_outputCoordinates);
     }
 
     public void Save(IEntitySaver entitySaver)
@@ -231,12 +224,9 @@ namespace Calloatti.CompactWaterTurbine
     private float MoveWater(float waterAmount)
     {
       float contamination = _threadSafeWaterMap.ColumnContamination(_waterInput.Coordinates);
-
-      // Update the exposed property for the particle controller
       CurrentContamination = contamination;
 
       float availableDepth = _threadSafeWaterMap.WaterDepth(_waterInput.Coordinates) + _threadSafeWaterMap.ColumnOverflow(_waterInput.Coordinates);
-
       float totalToMove = Mathf.Min(waterAmount, availableDepth);
       if (totalToMove <= 0f) return 0f;
 
@@ -277,10 +267,8 @@ namespace Calloatti.CompactWaterTurbine
   {
     [Serialize]
     public float MaxWaterPerSecond { get; init; } = 0.5f;
-
     [Serialize]
     public float MinWaterDrop { get; init; } = 1.0f;
-
     [Serialize]
     public float MaxWaterDrop { get; init; } = 5.0f;
   }
