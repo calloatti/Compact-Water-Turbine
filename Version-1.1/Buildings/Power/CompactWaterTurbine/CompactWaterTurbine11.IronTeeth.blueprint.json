@@ -1,4 +1,4 @@
-{
+﻿{
   "BuildingSpec": {
     "SelectionSoundName": "Default",
     "LoopingSoundName": "",
@@ -132,8 +132,7 @@
     "PowerInput": 0,
     "IsShaft": false
   },
-"CompactWaterTurbineSpec": {
-  },
+  "CompactWaterTurbineSpec": {},
   "WaterInputSpec": {
     "WaterInputCoordinates": {
       "X": 0,
@@ -165,9 +164,6 @@
     },
     "DistanceToGroundOffset": 1.0,
     "OverflowAllowed": true
-  },
-  "MechanicalNodeAnimatorSpec": {
-    "MinSpeedMultiplier": 0.0
   },
   "TemplateAttachmentsSpec": {
     "Attachments": [
@@ -202,7 +198,7 @@
   "Children": {
     "#Finished": {
       "TimbermeshSpec": {
-        "Model": "Buildings/Water/CompactMechanicalPump/CompactMechanicalPump.IronTeeth.Model"
+        "Model": "Buildings/Water/CompactMechanicalPump/Recolored.CompactMechanicalPump.IronTeeth.Model"
       },
       "CollidersSpec": {
         "BoxColliders": [

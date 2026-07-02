@@ -7,6 +7,8 @@ using Timberborn.EntitySystem;
 using Timberborn.MechanicalSystem;
 using Timberborn.Persistence;
 using Timberborn.TickSystem;
+using Timberborn.TimbermeshAnimations; // ADDED
+using Timberborn.TimeSystem; // ADDED
 using Timberborn.WaterBuildings;
 using Timberborn.WaterSystem;
 using Timberborn.WorldPersistence;
@@ -33,12 +35,14 @@ namespace Calloatti.CompactWaterTurbine
     private readonly CompactWaterTurbineSynchronizer _synchronizer;
     private readonly ISpecService _specService;
     private readonly IWaterService _waterService;
+    private readonly SpeedManager _speedManager; // ADDED
 
     private MechanicalNode _mechanicalNode;
     private WaterInput _waterInput;
     private WaterOutput _waterOutput;
     private CompactWaterTurbineSpec _spec;
     private BlockObject _blockObject;
+    private TimbermeshAnimator _animator; // ADDED
 
     private Vector3Int _outputCoordinates;
     private bool _isWaterFlowActive;
@@ -50,13 +54,15 @@ namespace Calloatti.CompactWaterTurbine
     public float MaxFlowRate => _spec.MaxWaterPerSecond;
     public bool IsSynchronized { get; private set; } = true;
 
-    public CompactWaterTurbine(ITickService tickService, IThreadSafeWaterMap threadSafeWaterMap, CompactWaterTurbineSynchronizer synchronizer, ISpecService specService, IWaterService waterService)
+    // MODIFIED: Added SpeedManager injection
+    public CompactWaterTurbine(ITickService tickService, IThreadSafeWaterMap threadSafeWaterMap, CompactWaterTurbineSynchronizer synchronizer, ISpecService specService, IWaterService waterService, SpeedManager speedManager)
     {
       _tickService = tickService;
       _threadSafeWaterMap = threadSafeWaterMap;
       _synchronizer = synchronizer;
       _specService = specService;
       _waterService = waterService;
+      _speedManager = speedManager; // ADDED
     }
 
     public void Awake()
@@ -66,6 +72,16 @@ namespace Calloatti.CompactWaterTurbine
       _waterOutput = GetComponent<WaterOutput>();
       _spec = GetComponent<CompactWaterTurbineSpec>();
       _blockObject = GetComponent<BlockObject>();
+
+      // ADDED BLOCK START
+      _animator = GetComponentInChildren<TimbermeshAnimator>();
+      IAnimatorController animatorController = GetComponentInChildren<IAnimatorController>();
+      if (animatorController != null)
+      {
+        animatorController.Disable();
+      }
+      // ADDED BLOCK END
+
       FlowRate = _spec.MaxWaterPerSecond;
       _overflowPressureFactor = _specService.GetSingleSpec<WaterSimulatorSpec>().OverflowPressureFactor;
       DisableComponent();
@@ -78,6 +94,14 @@ namespace Calloatti.CompactWaterTurbine
 
     public void OnEnterFinishedState()
     {
+      // ADDED BLOCK START
+      _animator = GetComponentInChildren<TimbermeshAnimator>();
+      if (_animator != null)
+      {
+        _animator.Enabled = true;
+      }
+      // ADDED BLOCK END
+
       WaterOutputSpec outputSpec = GetComponent<WaterOutputSpec>();
       _outputCoordinates = _blockObject.TransformCoordinates(outputSpec.WaterCoordinates);
       _sampleTimer = SampleIntervalSeconds;
@@ -93,6 +117,13 @@ namespace Calloatti.CompactWaterTurbine
       _sampleTimer = 0f;
       _cachedHead = 0f;
       _isWaterFlowActive = false;
+
+      // ADDED BLOCK START
+      if (_animator != null)
+      {
+        _animator.Speed = 0f;
+      }
+      // ADDED BLOCK END
     }
 
     public override void Tick()
@@ -117,6 +148,7 @@ namespace Calloatti.CompactWaterTurbine
       }
 
       UpdatePowerGeneration(EffectiveFlowRate, _cachedHead);
+      UpdateAnimationState(EffectiveFlowRate); // ADDED
     }
 
     private void UpdateFlowState()
@@ -261,6 +293,37 @@ namespace Calloatti.CompactWaterTurbine
 
       _mechanicalNode.SetOutputMultiplier(headMultiplier * flowMultiplier);
     }
+
+    // ADDED BLOCK START
+    private void UpdateAnimationState(float currentEffectiveFlow)
+    {
+      if (_animator == null) return;
+
+      if (MaxFlowRate <= 0f || currentEffectiveFlow <= 0.001f)
+      {
+        _animator.Speed = 0f;
+      }
+      else
+      {
+        if (string.IsNullOrEmpty(_animator.AnimationName))
+        {
+          _animator.Play("Default", true);
+        }
+
+        float baseSpeed = (currentEffectiveFlow / MaxFlowRate) * 5.0f;
+        float gameSpeed = _speedManager.CurrentSpeed;
+
+        if (gameSpeed > 0f)
+        {
+          _animator.Speed = baseSpeed / gameSpeed;
+        }
+        else
+        {
+          _animator.Speed = 0f;
+        }
+      }
+    }
+    // ADDED BLOCK END
   }
 
   public record CompactWaterTurbineSpec : ComponentSpec

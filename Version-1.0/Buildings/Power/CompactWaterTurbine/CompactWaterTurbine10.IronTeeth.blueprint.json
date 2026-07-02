@@ -1,4 +1,4 @@
-{
+﻿{
   "BuildingSpec": {
     "SelectionSoundName": "Default",
     "LoopingSoundName": "",
@@ -31,8 +31,7 @@
   },
   "TemplateSpec": {
     "TemplateName": "CompactWaterTurbine.IronTeeth",
-    "BackwardCompatibleTemplateNames": [
-    ],
+    "BackwardCompatibleTemplateNames": [],
     "RequiredFeatureToggle": "",
     "DisablingFeatureToggle": ""
   },
@@ -80,12 +79,9 @@
   "BlockObjectNavMeshSettingsSpec": {
     "NoAutoWalls": false,
     "GenerateFloorsOnStackable": true,
-    "EdgeGroups": [
-    ],
-    "UnblockedCoordinates": [
-    ],
-    "BlockedEdges": [
-    ]
+    "EdgeGroups": [],
+    "UnblockedCoordinates": [],
+    "BlockedEdges": []
   },
   "PlaceableBlockObjectSpec": {
     "ToolGroupId": "Power",
@@ -130,8 +126,7 @@
       0.0
     ]
   },
-  "MechanicalBuildingSpec": {
-  },
+  "MechanicalBuildingSpec": {},
   "MechanicalNodeSpec": {
     "PowerOutput": 1000,
     "PowerInput": 0,
@@ -158,17 +153,13 @@
     ],
     "IgnoreRotation": false
   },
-  "MechanicalConnectorTargetSpec": {
-  },
+  "MechanicalConnectorTargetSpec": {},
   "WaterOutputSpec": {
     "WaterCoordinates": {
       "X": 0,
       "Y": 0,
       "Z": 0
     }
-  },
-  "MechanicalNodeAnimatorSpec": {
-    "MinSpeedMultiplier": 0.0
   },
   "TemplateAttachmentsSpec": {
     "Attachments": [
@@ -206,7 +197,7 @@
   "Children": {
     "#Finished": {
       "TimbermeshSpec": {
-        "Model": "Buildings/Water/CompactMechanicalPump/CompactMechanicalPump.IronTeeth.Model"
+        "Model": "Buildings/Water/CompactMechanicalPump/Recolored.CompactMechanicalPump.IronTeeth.Model"
       },
       "CollidersSpec": {
         "BoxColliders": [
@@ -223,10 +214,8 @@
             }
           }
         ],
-        "SphereColliders": [
-        ],
-        "CapsuleColliders": [
-        ]
+        "SphereColliders": [],
+        "CapsuleColliders": []
       }
     },
     "#Unfinished": {
@@ -272,10 +261,8 @@
                 }
               }
             ],
-            "SphereColliders": [
-            ],
-            "CapsuleColliders": [
-            ]
+            "SphereColliders": [],
+            "CapsuleColliders": []
           }
         }
       }

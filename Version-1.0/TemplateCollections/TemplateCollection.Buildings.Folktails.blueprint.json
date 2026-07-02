@@ -1,9 +1,9 @@
-{
+﻿{
   "TemplateCollectionSpec": {
     "CollectionId": "Buildings.Folktails",
     "Blueprints#append": [
       "Buildings/Power/CompactWaterTurbine/CompactWaterTurbine10.Folktails.blueprint",
-      "Buildings/Power/ImpermeablePowerShaft/ImpermeablePowerShaft.Folktails.blueprint",
+      "Buildings/Power/ImpermeablePowerShaft/ImpermeablePowerShaft.Folktails.blueprint"
     ]
   }
 }

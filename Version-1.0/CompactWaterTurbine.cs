@@ -7,6 +7,8 @@ using Timberborn.EntitySystem;
 using Timberborn.MechanicalSystem;
 using Timberborn.Persistence;
 using Timberborn.TickSystem;
+using Timberborn.TimbermeshAnimations; // ADDED
+using Timberborn.TimeSystem;
 using Timberborn.WaterBuildings;
 using Timberborn.WaterSystem;
 using Timberborn.WorldPersistence;
@@ -37,6 +39,7 @@ namespace Calloatti.CompactWaterTurbine
     private WaterOutput _waterOutput;
     private CompactWaterTurbineSpec _spec;
     private BlockObject _blockObject;
+    private TimbermeshAnimator _animator; // ADDED
 
     private Vector3Int _inputCoordinates;
     private Vector3Int _outputCoordinates;
@@ -50,21 +53,35 @@ namespace Calloatti.CompactWaterTurbine
     public float MaxFlowRate => _spec.MaxWaterPerSecond;
     public bool IsSynchronized { get; private set; } = true;
 
-    public CompactWaterTurbine(ITickService tickService, IThreadSafeWaterMap threadSafeWaterMap, CompactWaterTurbineSynchronizer synchronizer, ISpecService specService, IWaterService waterService)
+    // ADDED: Private field to hold the SpeedManager
+    private readonly SpeedManager _speedManager;
+
+    // MODIFIED: Injected SpeedManager at the end of the constructor
+    public CompactWaterTurbine(ITickService tickService, IThreadSafeWaterMap threadSafeWaterMap, CompactWaterTurbineSynchronizer synchronizer, ISpecService specService, IWaterService waterService, SpeedManager speedManager)
     {
       _tickService = tickService;
       _threadSafeWaterMap = threadSafeWaterMap;
       _synchronizer = synchronizer;
       _specService = specService;
       _waterService = waterService;
+      _speedManager = speedManager; // ADDED: Save the reference
     }
-
     public void Awake()
     {
       _mechanicalNode = GetComponent<MechanicalNode>();
       _waterOutput = GetComponent<WaterOutput>();
       _spec = GetComponent<CompactWaterTurbineSpec>();
       _blockObject = GetComponent<BlockObject>();
+
+      // ADDED BLOCK START: Hijack the animation away from the power network
+      _animator = GetComponentInChildren<TimbermeshAnimator>();
+      IAnimatorController animatorController = GetComponentInChildren<IAnimatorController>();
+      if (animatorController != null)
+      {
+        animatorController.Disable();
+      }
+      // ADDED BLOCK END
+
       FlowRate = _spec.MaxWaterPerSecond;
 
       DisableComponent();
@@ -77,6 +94,13 @@ namespace Calloatti.CompactWaterTurbine
 
     public void OnEnterFinishedState()
     {
+      // ADDED: Refresh animator for the Finished model and explicitly turn it on!
+      _animator = GetComponentInChildren<TimbermeshAnimator>();
+      if (_animator != null)
+      {
+        _animator.Enabled = true;
+      }
+
       WaterOutputSpec outputSpec = GetComponent<WaterOutputSpec>();
       _outputCoordinates = _blockObject.TransformCoordinates(outputSpec.WaterCoordinates);
 
@@ -86,7 +110,6 @@ namespace Calloatti.CompactWaterTurbine
       _sampleTimer = SampleIntervalSeconds;
       EnableComponent();
     }
-
     public void OnExitFinishedState()
     {
       DisableComponent();
@@ -96,8 +119,13 @@ namespace Calloatti.CompactWaterTurbine
       _sampleTimer = 0f;
       _cachedHead = 0f;
       _isWaterFlowActive = false;
-    }
 
+      // MODIFIED: Safely pause instead of wiping the animation
+      if (_animator != null)
+      {
+        _animator.Speed = 0f;
+      }
+    }
     public override void Tick()
     {
       _sampleTimer += _tickService.TickIntervalInSeconds;
@@ -120,6 +148,7 @@ namespace Calloatti.CompactWaterTurbine
       }
 
       UpdatePowerGeneration(EffectiveFlowRate, _cachedHead);
+      UpdateAnimationState(EffectiveFlowRate); // ADDED
     }
 
     private void UpdateFlowState()
@@ -258,6 +287,39 @@ namespace Calloatti.CompactWaterTurbine
       float flowMultiplier = currentEffectiveFlow / MaxFlowRate;
 
       _mechanicalNode.SetOutputMultiplier(headMultiplier * flowMultiplier);
+    }
+
+    private void UpdateAnimationState(float currentEffectiveFlow)
+    {
+      if (_animator == null) return;
+
+      if (MaxFlowRate <= 0f || currentEffectiveFlow <= 0.001f)
+      {
+        _animator.Speed = 0f;
+      }
+      else
+      {
+        if (string.IsNullOrEmpty(_animator.AnimationName))
+        {
+          _animator.Play("Default", true);
+        }
+
+        // 1. Calculate our desired visual base speed (0.0 to 1.0 ratio, times 5)
+        float baseSpeed = (currentEffectiveFlow / MaxFlowRate) * 5.0f;
+
+        // 2. Fetch the current game speed (1x, 2x, 3x, or 0x if paused)
+        float gameSpeed = _speedManager.CurrentSpeed;
+
+        // 3. Cancel out the game speed by dividing. Safeguard against dividing by 0!
+        if (gameSpeed > 0f)
+        {
+          _animator.Speed = baseSpeed / gameSpeed;
+        }
+        else
+        {
+          _animator.Speed = 0f;
+        }
+      }
     }
   }
 

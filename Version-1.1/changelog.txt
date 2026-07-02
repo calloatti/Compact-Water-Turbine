@@ -1,3 +1,9 @@
+Game Version: 1.1.0.2 - Mod Version: 1.6.2
+- Now animation is controlled by water flow rate
+--------------------------------------------------------------------------------
+Game Version: 1.1.0.2 - Mod Version: 1.6.1
+- Changed painted color of turbines
+--------------------------------------------------------------------------------
 Game Version:  1.1.0.2 - Mod Version: 1.6.0
 - Version bump to match 1.0 mod version
 --------------------------------------------------------------------------------

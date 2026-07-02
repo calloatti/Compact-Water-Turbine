@@ -1,3 +1,9 @@
+Game Version: 1.0.13.1 - Mod Version: 1.6.2
+- Now animation is controlled by water flow rate
+--------------------------------------------------------------------------------
+Game Version: 1.0.13.1 - Mod Version: 1.6.1
+- Changed painted color of turbines
+--------------------------------------------------------------------------------
 Game Version: 1.0.13.1 - Mod Version: 1.6.0
 - Backported the Impermeable Power Shaft from experimental 1.1
 --------------------------------------------------------------------------------
