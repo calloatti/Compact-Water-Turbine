@@ -1,0 +1,10 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,Компактна водяна турбіна,
+Building.CompactWaterTurbine.Description,"Вбудована водяна турбіна, що виробляє енергію завдяки течії. Ідеально підходить для вузьких каналів 1×1.",
+Building.CompactWaterTurbine.FlavorDescription,"Бобри швидко зрозуміли: якщо насос витрачає енергію, щоб рухати воду, то вода може рухати насос і виробляти енергію.",
+Building.CompactWaterTurbine.CurrentDrop,Поточний перепад води: {0},
+Building.CompactWaterTurbine.RealFlow,Поточна течія: {0},
+Building.CompactWaterTurbine.Synchronize,Синхронізувати із сусідніми турбінами,
+Building.CompactWaterTurbine.FlowRate,Швидкість потоку: {0}
+Building.ImpermeablePowerShaft.Description,Передає енергію. Не пропускає воду.,
+Building.ImpermeablePowerShaft.DisplayName,Герметичний силовий вал,Must be consistent with Building.PowerShaft.DisplayName. An axle which transfers power embedded in a block of wood which keeps it watertight.
