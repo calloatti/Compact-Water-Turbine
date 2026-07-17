@@ -1,0 +1,10 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"コンパクト水力タービン",
+Building.CompactWaterTurbine.Description,"流水から電力を生成するインライン水車。狭い1x1水路に完璧に収まります。",
+Building.CompactWaterTurbine.FlavorDescription,"ビーバーたちはすぐに気づいた。ポンプが水を動かすために電力を使うなら、水がポンプを動かして電力を生み出せるのだと。",
+Building.CompactWaterTurbine.CurrentDrop,"現在の落差: {0}",
+Building.CompactWaterTurbine.RealFlow,"現在の流量: {0}",
+Building.CompactWaterTurbine.Synchronize,"隣接するタービンと同期",
+Building.CompactWaterTurbine.FlowRate,"流量: {0}",
+Building.ImpermeablePowerShaft.Description,"動力を伝達します。水を遮断します。",
+Building.ImpermeablePowerShaft.DisplayName,"防水動力シャフト","Must be consistent with Building.PowerShaft.DisplayName. An axle which transfers power embedded in a block of wood which keeps it watertight."

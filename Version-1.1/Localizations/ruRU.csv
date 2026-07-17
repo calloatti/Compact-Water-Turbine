@@ -1,0 +1,7 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"Компактная водяная турбина",
+Building.CompactWaterTurbine.Description,"Встроенная водяная турбина, вырабатывающая энергию из проточной воды. Идеально помещается в узких каналах 1x1.",
+Building.CompactWaterTurbine.FlavorDescription,"Бобры быстро поняли: если насос использует энергию для перемещения воды, то вода может перемещать насос для выработки энергии.",
+Building.CompactWaterTurbine.CurrentDrop,"Текущий перепад воды: {0}",
+Building.CompactWaterTurbine.RealFlow,"Текущий поток: {0}",
+Building.CompactWaterTurbine.Synchronize,"Синхронизировать с соседними турбинами",

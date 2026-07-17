@@ -1,0 +1,7 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"กังหันน้ำขนาดกะทัดรัด",
+Building.CompactWaterTurbine.Description,"กังหันน้ำแบบอินไลน์ที่ผลิตพลังงานจากน้ำที่ไหลผ่าน เหมาะอย่างยิ่งสำหรับช่องทางแคบขนาด 1x1",
+Building.CompactWaterTurbine.FlavorDescription,"เหล่าบีเวอร์ค้นพบในไม่ช้าว่า ถ้าปั๊มใช้พลังงานในการเคลื่อนย้ายน้ำ น้ำก็สามารถเคลื่อนย้ายปั๊มเพื่อผลิตพลังงานได้เช่นกัน",
+Building.CompactWaterTurbine.CurrentDrop,"ระดับน้ำตกปัจจุบัน: {0}",
+Building.CompactWaterTurbine.RealFlow,"การไหลปัจจุบัน: {0}",
+Building.CompactWaterTurbine.Synchronize,"ซิงโครไนซ์กับกังหันที่อยู่ติดกัน",

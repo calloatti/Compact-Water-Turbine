@@ -1,0 +1,7 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"Kompakte Wasserturbine",
+Building.CompactWaterTurbine.Description,"Eine Inline-Wasserturbine, die aus fließendem Wasser Energie erzeugt. Passt perfekt in enge 1x1 Kanäle.",
+Building.CompactWaterTurbine.FlavorDescription,"Die Biber erkannten bald: Wenn eine Pumpe Strom braucht, um Wasser zu bewegen, kann Wasser eine Pumpe bewegen, um Strom zu erzeugen.",
+Building.CompactWaterTurbine.CurrentDrop,"Aktuelles Wasser-Gefälle: {0}",
+Building.CompactWaterTurbine.RealFlow,"Aktuelle Strömung: {0}",
+Building.CompactWaterTurbine.Synchronize,"Mit benachbarten Turbinen synchronisieren",

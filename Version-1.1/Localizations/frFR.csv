@@ -1,0 +1,7 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"Turbine hydraulique compacte",
+Building.CompactWaterTurbine.Description,"Une turbine hydraulique en ligne qui génère de l'énergie à partir de l'eau courante. S'adapte parfaitement dans les canaux étroits 1x1.",
+Building.CompactWaterTurbine.FlavorDescription,"Les castons ont vite compris que si une pompe utilise de l'énergie pour déplacer l'eau, l'eau peut déplacer une pompe pour produire de l'énergie.",
+Building.CompactWaterTurbine.CurrentDrop,"Chute d'eau actuelle : {0}",
+Building.CompactWaterTurbine.RealFlow,"Débit actuel : {0}",
+Building.CompactWaterTurbine.Synchronize,"Synchroniser avec les turbines adjacentes",

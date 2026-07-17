@@ -1,0 +1,10 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"Turbina d'água compacta",
+Building.CompactWaterTurbine.Description,"Uma turbina d'água em linha que gera energia a partir da água corrente. Encaixa-se perfeitamente em canais estreitos de 1x1.",
+Building.CompactWaterTurbine.FlavorDescription,"Os castores logo perceberam que, se uma bomba usa energia para mover água, a água pode mover uma bomba para gerar energia.",
+Building.CompactWaterTurbine.CurrentDrop,"Queda d'água atual: {0}",
+Building.CompactWaterTurbine.RealFlow,"Fluxo atual: {0}",
+Building.CompactWaterTurbine.Synchronize,"Sincronizar com turbinas adjacentes",
+Building.CompactWaterTurbine.FlowRate,"Taxa de fluxo: {0}",
+Building.ImpermeablePowerShaft.Description,"Transfere energia. Bloqueia água.",
+Building.ImpermeablePowerShaft.DisplayName,"Eixo de força impermeável","Must be consistent with Building.PowerShaft.DisplayName. An axle which transfers power embedded in a block of wood which keeps it watertight."

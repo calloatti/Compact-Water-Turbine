@@ -1,0 +1,7 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"緊湊型水輪機",
+Building.CompactWaterTurbine.Description,"一種從流水中發電的直列式水輪機。完美適用於狹窄的1x1水道。",
+Building.CompactWaterTurbine.FlavorDescription,"海狸們很快意識到：如果水泵需要電力來移動水，那麼水也可以推動水泵來發電。",
+Building.CompactWaterTurbine.CurrentDrop,"當前水位落差: {0}",
+Building.CompactWaterTurbine.RealFlow,"當前流量: {0}",
+Building.CompactWaterTurbine.Synchronize,"與相鄰水輪機同步",

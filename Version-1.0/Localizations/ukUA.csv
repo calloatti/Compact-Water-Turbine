@@ -1,4 +1,5 @@
 ID,Text,Comment
+human-made-translation,"human-made-translation",
 Building.CompactWaterTurbine.DisplayName,Компактна водяна турбіна,
 Building.CompactWaterTurbine.Description,"Вбудована водяна турбіна, що виробляє енергію завдяки течії. Ідеально підходить для вузьких каналів 1×1.",
 Building.CompactWaterTurbine.FlavorDescription,"Бобри швидко зрозуміли: якщо насос витрачає енергію, щоб рухати воду, то вода може рухати насос і виробляти енергію.",

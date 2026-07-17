@@ -1,0 +1,7 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"Turbina idraulica compatta",
+Building.CompactWaterTurbine.Description,"Una turbina idraulica in linea che genera energia dall'acqua corrente. Si adatta perfettamente a canali stretti 1x1.",
+Building.CompactWaterTurbine.FlavorDescription,"I castori capirono presto che se una pompa usa energia per muovere l'acqua, l'acqua può muovere una pompa per produrre energia.",
+Building.CompactWaterTurbine.CurrentDrop,"Dislivello d'acqua attuale: {0}",
+Building.CompactWaterTurbine.RealFlow,"Flusso attuale: {0}",
+Building.CompactWaterTurbine.Synchronize,"Sincronizza con turbine adiacenti",

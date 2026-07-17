@@ -1,0 +1,7 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"Kompakt Su Türbini",
+Building.CompactWaterTurbine.Description,"Akan sudan güç üreten bir içten su türbini. Dar 1x1 kanallara mükemmel şekilde uyar.",
+Building.CompactWaterTurbine.FlavorDescription,"Kunduzlar kısa sürede fark etti: Bir pompa suyu hareket ettirmek için güç kullanıyorsa, su da bir pompayı hareket ettirerek güç üretebilir.",
+Building.CompactWaterTurbine.CurrentDrop,"Mevcut Su Düşüşü: {0}",
+Building.CompactWaterTurbine.RealFlow,"Mevcut Akış: {0}",
+Building.CompactWaterTurbine.Synchronize,"Bitişik türbinlerle senkronize et",

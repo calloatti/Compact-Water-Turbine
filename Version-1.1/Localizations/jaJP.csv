@@ -1,0 +1,7 @@
+ID,Text,Comment
+Building.CompactWaterTurbine.DisplayName,"コンパクト水力タービン",
+Building.CompactWaterTurbine.Description,"流水から電力を生成するインライン水車。狭い1x1水路に完璧に収まります。",
+Building.CompactWaterTurbine.FlavorDescription,"ビーバーたちはすぐに気づいた。ポンプが水を動かすために電力を使うなら、水がポンプを動かして電力を生み出せるのだと。",
+Building.CompactWaterTurbine.CurrentDrop,"現在の落差: {0}",
+Building.CompactWaterTurbine.RealFlow,"現在の流量: {0}",
+Building.CompactWaterTurbine.Synchronize,"隣接するタービンと同期",
