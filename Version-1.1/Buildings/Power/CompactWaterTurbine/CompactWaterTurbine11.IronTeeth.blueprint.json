@@ -3,18 +3,9 @@
     "SelectionSoundName": "Default",
     "LoopingSoundName": "",
     "BuildingCost": [
-      {
-        "Id": "Gear",
-        "Amount": 50
-      },
-      {
-        "Id": "TreatedPlank",
-        "Amount": 25
-      },
-      {
-        "Id": "MetalBlock",
-        "Amount": 25
-      }
+      {"Id": "Gear", "Amount": 50},
+      {"Id": "TreatedPlank", "Amount": 25},
+      {"Id": "MetalBlock", "Amount": 25}
     ],
     "ScienceCost": 4000,
     "PlaceFinished": false,
@@ -36,11 +27,7 @@
     "DisablingFeatureToggle": ""
   },
   "BlockObjectSpec": {
-    "Size": {
-      "X": 1,
-      "Y": 3,
-      "Z": 1
-    },
+    "Size": {"X": 1, "Y": 3, "Z": 1},
     "Blocks": [
       {
         "MatterBelow": "Any",
@@ -64,14 +51,7 @@
         "Underground": false
       }
     ],
-    "Entrance": {
-      "HasEntrance": false,
-      "Coordinates": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      }
-    },
+    "Entrance": {"HasEntrance": false, "Coordinates": {"X": 0, "Y": 0, "Z": 0}},
     "BaseZ": 0,
     "Overridable": false,
     "Flippable": false
@@ -88,81 +68,35 @@
     "ToolOrder": 52,
     "ToolShape": "Square",
     "Layout": "Single",
-    "CustomPivot": {
-      "HasCustomPivot": false,
-      "Coordinates": {
-        "X": 0.0,
-        "Y": 0.0,
-        "Z": 0.0
-      }
-    },
+    "CustomPivot": {"HasCustomPivot": false, "Coordinates": {"X": 0, "Y": 0, "Z": 0}},
     "CanBeAttachedToTerrainSide": false,
     "DevModeTool": false
   },
-  "WaterObstacleSpec": {
-    "Coordinates": [
-      {
-        "X": 0,
-        "Y": 1
-      }
-    ]
-  },
-  "FinishableWaterObstacleSpec": {
-    "Height": 1.0
-  },
+  "WaterObstacleSpec": {"Coordinates": [{"X": 0, "Y": 1}]},
+  "FinishableWaterObstacleSpec": {"Height": 1},
   "LabeledEntitySpec": {
     "DisplayNameLocKey": "Building.CompactWaterTurbine.DisplayName",
     "DescriptionLocKey": "Building.CompactWaterTurbine.Description",
     "FlavorDescriptionLocKey": "Building.CompactWaterTurbine.FlavorDescription",
     "Icon": "Buildings/Water/CompactMechanicalPump/CompactMechanicalPumpIcon"
   },
-  "SoilBarrierSpec": {
-    "BlockAboveMoisture": true,
-    "BlockFullMoisture": false,
-    "BlockContamination": false
-  },
-  "ConstructionSiteProgressVisualizerSpec": {
-    "ProgressThresholds": [
-      0.0
-    ]
-  },
+  "SoilBarrierSpec": {"BlockAboveMoisture": true, "BlockFullMoisture": false, "BlockContamination": false},
+  "ConstructionSiteProgressVisualizerSpec": {"ProgressThresholds": [0]},
   "MechanicalBuildingSpec": {},
-  "MechanicalNodeSpec": {
-    "PowerOutput": 1000,
-    "PowerInput": 0,
-    "IsShaft": false
-  },
+  "MechanicalNodeSpec": {"PowerOutput": 1000, "PowerInput": 0, "IsShaft": false},
   "CompactWaterTurbineSpec": {},
-  "WaterInputSpec": {
-    "WaterInputCoordinates": {
-      "X": 0,
-      "Y": 2,
-      "Z": 0
-    }
-  },
+  "WaterInputSpec": {"WaterInputCoordinates": {"X": 0, "Y": 2, "Z": 0}},
   "WaterInputFixedSpec": {},
   "TransputProviderSpec": {
     "Transputs": [
-      {
-        "Coordinates": {
-          "X": 0,
-          "Y": 1,
-          "Z": 0
-        },
-        "Directions": "Left, Right, Bottom, Top",
-        "ReverseRotation": false
-      }
+      {"Coordinates": {"X": 0, "Y": 1, "Z": 0}, "Directions": "Left, Right, Bottom, Top", "ReverseRotation": false}
     ],
     "IgnoreRotation": false
   },
   "MechanicalConnectorTargetSpec": {},
   "WaterOutputSpec": {
-    "WaterCoordinates": {
-      "X": 0,
-      "Y": 0,
-      "Z": 0
-    },
-    "DistanceToGroundOffset": 1.0,
+    "WaterCoordinates": {"X": 0, "Y": 0, "Z": 0},
+    "DistanceToGroundOffset": 1,
     "OverflowAllowed": true
   },
   "TemplateAttachmentsSpec": {
@@ -171,30 +105,14 @@
         "AttachmentId": "Water",
         "Prefab": "Environment/WaterDrops/WaterDrops",
         "Parent": "#Finished",
-        "Position": {
-          "X": 0.5,
-          "Y": 0.45,
-          "Z": 0.55
-        },
-        "Rotation": {
-          "X": 0.0,
-          "Y": 180.0,
-          "Z": 0.0
-        },
-        "Scale": {
-          "X": 1.0,
-          "Y": 1.0,
-          "Z": 1.0
-        },
+        "Position": {"X": 0.5, "Y": 0.45, "Z": 0.55},
+        "Rotation": {"X": 0, "Y": 180, "Z": 0},
+        "Scale": {"X": 1, "Y": 1, "Z": 1},
         "CreateInstantly": true
       }
     ]
   },
-  "CompactWaterTurbineParticleControllerSpec": {
-    "AttachmentIds": [
-      "Water"
-    ]
-  },
+  "CompactWaterTurbineParticleControllerSpec": {"AttachmentIds": ["Water"]},
   "Children": {
     "#Finished": {
       "TimbermeshSpec": {
@@ -203,16 +121,8 @@
       "CollidersSpec": {
         "BoxColliders": [
           {
-            "Center": {
-              "X": 0.5,
-              "Y": 0.5010949,
-              "Z": 1.59249628
-            },
-            "Size": {
-              "X": 1.00163341,
-              "Y": 0.9974164,
-              "Z": 1.6160388
-            }
+            "Center": {"X": 0.5, "Y": 0.5010949, "Z": 1.59249628},
+            "Size": {"X": 1.00163341, "Y": 0.9974164, "Z": 1.6160388}
           }
         ],
         "SphereColliders": [],
@@ -225,21 +135,9 @@
           "BlueprintPath": "ConstructionBases/ConstructionBase1x1/ConstructionBase1x1.blueprint",
           "Modification": {
             "TransformSpec": {
-              "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 1.0
-              },
-              "Rotation": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-              },
-              "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-              }
+              "Position": {"X": 0, "Y": 0, "Z": 1},
+              "Rotation": {"X": 0, "Y": 0, "Z": 0},
+              "Scale": {"X": 1, "Y": 1, "Z": 1}
             }
           }
         },
@@ -249,18 +147,7 @@
           },
           "CollidersSpec": {
             "BoxColliders": [
-              {
-                "Center": {
-                  "X": 0.5,
-                  "Y": 0.498658776,
-                  "Z": 1.5
-                },
-                "Size": {
-                  "X": 1.0,
-                  "Y": 0.9994699,
-                  "Z": 1.3340528
-                }
-              }
+              {"Center": {"X": 0.5, "Y": 0.498658776, "Z": 1.5}, "Size": {"X": 1, "Y": 0.9994699, "Z": 1.3340528}}
             ],
             "SphereColliders": [],
             "CapsuleColliders": []

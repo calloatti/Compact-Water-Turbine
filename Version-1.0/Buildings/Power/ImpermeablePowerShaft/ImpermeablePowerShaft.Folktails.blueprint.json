@@ -2,20 +2,7 @@
   "BuildingSpec": {
     "SelectionSoundName": "Default",
     "LoopingSoundName": "",
-    "BuildingCost": [
-      {
-        "Id": "Log",
-        "Amount": 12
-      },
-      {
-        "Id": "Gear",
-        "Amount": 6
-      },
-      {
-        "Id": "MetalBlock",
-        "Amount": 10
-      }
-    ],
+    "BuildingCost": [{"Id": "Log", "Amount": 12}, {"Id": "Gear", "Amount": 6}, {"Id": "MetalBlock", "Amount": 10}],
     "ScienceCost": 300,
     "PlaceFinished": false,
     "FinishableWithBeaversOnSite": false,
@@ -36,11 +23,7 @@
     "DisablingFeatureToggle": ""
   },
   "BlockObjectSpec": {
-    "Size": {
-      "X": 1,
-      "Y": 1,
-      "Z": 1
-    },
+    "Size": {"X": 1, "Y": 1, "Z": 1},
     "Blocks": [
       {
         "MatterBelow": "GroundOrStackable",
@@ -50,14 +33,7 @@
         "Underground": false
       }
     ],
-    "Entrance": {
-      "HasEntrance": false,
-      "Coordinates": {
-        "X": 0,
-        "Y": 0,
-        "Z": 0
-      }
-    },
+    "Entrance": {"HasEntrance": false, "Coordinates": {"X": 0, "Y": 0, "Z": 0}},
     "BaseZ": 0,
     "Overridable": false,
     "Flippable": false
@@ -74,82 +50,37 @@
     "ToolOrder": 33,
     "ToolShape": "Square",
     "Layout": "Rectangle",
-    "CustomPivot": {
-      "HasCustomPivot": false,
-      "Coordinates": {
-        "X": 0.0,
-        "Y": 0.0,
-        "Z": 0.0
-      }
-    },
+    "CustomPivot": {"HasCustomPivot": false, "Coordinates": {"X": 0, "Y": 0, "Z": 0}},
     "CanBeAttachedToTerrainSide": false,
     "DevModeTool": false
   },
-  "WaterObstacleSpec": {
-    "Coordinates": [
-      {
-        "X": 0,
-        "Y": 0
-      }
-    ]
-  },
-  "FinishableWaterObstacleSpec": {
-    "Height": 1.0
-  },
+  "WaterObstacleSpec": {"Coordinates": [{"X": 0, "Y": 0}]},
+  "FinishableWaterObstacleSpec": {"Height": 1},
   "LabeledEntitySpec": {
     "DisplayNameLocKey": "Building.ImpermeablePowerShaft.DisplayName",
     "DescriptionLocKey": "Building.ImpermeablePowerShaft.Description",
     "FlavorDescriptionLocKey": "",
     "Icon": "Buildings/Power/ImpermeablePowerShaft/ImpermeablePowerShaftIcon"
   },
-  "SoilBarrierSpec": {
-    "BlockAboveMoisture": true,
-    "BlockFullMoisture": false,
-    "BlockContamination": false
-  },
-  "ConstructionSiteProgressVisualizerSpec": {
-    "ProgressThresholds": [
-      0.0
-    ]
-  },
+  "SoilBarrierSpec": {"BlockAboveMoisture": true, "BlockFullMoisture": false, "BlockContamination": false},
+  "ConstructionSiteProgressVisualizerSpec": {"ProgressThresholds": [0]},
   "TransputProviderSpec": {
     "Transputs": [
       {
-        "Coordinates": {
-          "X": 0,
-          "Y": 0,
-          "Z": 0
-        },
+        "Coordinates": {"X": 0, "Y": 0, "Z": 0},
         "Directions": "Down, Left, Up, Right, Bottom, Top",
         "ReverseRotation": false
       }
     ],
     "IgnoreRotation": true
   },
-  "MechanicalNodeSpec": {
-    "PowerOutput": 0,
-    "PowerInput": 0,
-    "IsShaft": true
-  },
+  "MechanicalNodeSpec": {"PowerOutput": 0, "PowerInput": 0, "IsShaft": true},
   "Children": {
     "#Finished": {
-      "TimbermeshSpec": {
-        "Model": "Buildings/Power/ImpermeablePowerShaft/ImpermeablePowerShaft.Folktails.Model"
-      },
+      "TimbermeshSpec": {"Model": "Buildings/Power/ImpermeablePowerShaft/ImpermeablePowerShaft.Folktails.Model"},
       "CollidersSpec": {
         "BoxColliders": [
-          {
-            "Center": {
-              "X": 0.5,
-              "Y": 0.510495067,
-              "Z": 0.5
-            },
-            "Size": {
-              "X": 0.9,
-              "Y": 1.02099013,
-              "Z": 0.9
-            }
-          }
+          {"Center": {"X": 0.5, "Y": 0.510495067, "Z": 0.5}, "Size": {"X": 0.9, "Y": 1.02099013, "Z": 0.9}}
         ],
         "SphereColliders": [],
         "CapsuleColliders": []
@@ -166,18 +97,7 @@
           },
           "CollidersSpec": {
             "BoxColliders": [
-              {
-                "Center": {
-                  "X": 0.5,
-                  "Y": 0.113058493,
-                  "Z": 0.5
-                },
-                "Size": {
-                  "X": 1.0,
-                  "Y": 0.226116985,
-                  "Z": 1.0
-                }
-              }
+              {"Center": {"X": 0.5, "Y": 0.113058493, "Z": 0.5}, "Size": {"X": 1, "Y": 0.226116985, "Z": 1}}
             ],
             "SphereColliders": [],
             "CapsuleColliders": []
