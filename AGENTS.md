@@ -6,7 +6,7 @@ Include ..\AGENTS.md
 - **Assembly:** `compactwaterturbine`
 - **Namespace:** `Calloatti.compactwaterturbine`
 - **Framework:** Harmony, Bindito DI
-- **Publicizer:** removes `Timberborn.BlueprintSystem`, includes `Timberborn.CoreUI`, `Timberborn.WaterSystem`, `Timberborn.TimbermeshAnimations`
+- **Publicizer:** `Timberborn.BlueprintSystem` is publicized via `CommonModSettings.props`, with `DoNotPublicize` for `ComponentSpec.EqualityContract`/`PrintMembers` (record-inheritance CS0507 fix — see csproj); csproj also adds `Timberborn.CoreUI`, `Timberborn.WaterSystem`, `Timberborn.TimbermeshAnimations`
 - **ModId:** `Calloatti.CompactWaterTurbine`
 - **Min Game Version:** 1.0.0.0 — uses `timberborn-decompiled-1.0.*`
 

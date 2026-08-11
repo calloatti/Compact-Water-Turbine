@@ -1,3 +1,5 @@
+* Game Version: 1.0.13.1 - Mod Version: 1.6.3
+- Removed reflection
 * Game Version: 1.0.13.1 - Mod Version: 1.6.2
 - Now animation is controlled by water flow rate
 * Game Version: 1.0.13.1 - Mod Version: 1.6.1
