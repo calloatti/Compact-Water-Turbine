@@ -1,3 +1,8 @@
+* Game Version: 1.1.0.2 - Mod Version: 1.6.5
+- Add dot to building icons
+* Game Version: 1.1.0.2 - Mod Version: 1.6.4
+- Now uses custom models instead of reusing CWP models
+- Changed occupations of input block
 * Game Version: 1.1.0.2 - Mod Version: 1.6.3
 - Removed reflection
 * Game Version: 1.1.0.2 - Mod Version: 1.6.2

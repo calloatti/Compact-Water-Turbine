@@ -1,0 +1,4 @@
+* Game Version: 1.1.0.2 - Mod Version: 1.6.5
+- Add dot to building icons
+* Game Version: 1.0.13.1 - Mod Version: 1.6.5
+- Add dot to building icons

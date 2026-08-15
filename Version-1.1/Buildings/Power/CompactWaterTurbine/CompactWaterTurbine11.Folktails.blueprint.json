@@ -45,7 +45,7 @@
       },
       {
         "MatterBelow": "Any",
-        "Occupations": "Bottom, Top, Corners, Path, Middle",
+        "Occupations": "Middle",
         "Stackable": "None",
         "OccupyAllBelow": false,
         "Underground": false
@@ -78,7 +78,7 @@
     "DisplayNameLocKey": "Building.CompactWaterTurbine.DisplayName",
     "DescriptionLocKey": "Building.CompactWaterTurbine.Description",
     "FlavorDescriptionLocKey": "Building.CompactWaterTurbine.FlavorDescription",
-    "Icon": "Buildings/Water/CompactMechanicalPump/CompactMechanicalPumpIcon"
+    "Icon": "Buildings/Power/CompactWaterTurbine/CompactWaterTurbine10Icon"
   },
   "SoilBarrierSpec": {"BlockAboveMoisture": true, "BlockFullMoisture": false, "BlockContamination": false},
   "ConstructionSiteProgressVisualizerSpec": {"ProgressThresholds": [0]},
@@ -116,7 +116,7 @@
   "Children": {
     "#Finished": {
       "TimbermeshSpec": {
-        "Model": "Buildings/Water/CompactMechanicalPump/Recolored.CompactMechanicalPump.Folktails.Model"
+        "Model": "Buildings/Power/CompactWaterTurbine/CompactWaterTurbine10.Folktails.Model"
       },
       "CollidersSpec": {
         "BoxColliders": [
@@ -143,7 +143,7 @@
         },
         "ConstructionStage0": {
           "TimbermeshSpec": {
-            "Model": "Buildings/Water/CompactMechanicalPump/CompactMechanicalPump.Folktails.ConstructionStage0.Model"
+            "Model": "Buildings/Power/CompactWaterTurbine/CompactWaterTurbine10.Folktails.ConstructionStage0.Model"
           },
           "CollidersSpec": {
             "BoxColliders": [
