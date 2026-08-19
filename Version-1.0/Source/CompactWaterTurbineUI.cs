@@ -4,7 +4,6 @@ using Timberborn.EntityPanelSystem;
 using Timberborn.Localization;
 using Timberborn.UIFormatters;
 using UnityEngine.UIElements;
-using UnityEngine;
 
 namespace Calloatti.CompactWaterTurbine
 {
@@ -34,71 +33,17 @@ namespace Calloatti.CompactWaterTurbine
 
     public VisualElement InitializeFragment()
     {
-      // 1. Programmatically recreate the Native NineSlice UI frame (the green box)
-      NineSliceVisualElement rootFrame = new NineSliceVisualElement();
-      rootFrame.name = "WaterMoverFragment";
-      rootFrame.AddToClassList("entity-sub-panel");
-      rootFrame.AddToClassList("bg-sub-box--green");
-      _root = rootFrame;
+      _root = _visualElementLoader.LoadVisualElement("CompactWaterTurbine/TurbinePanel");
 
-      // 2. Initialize Programmatic Text Labels
-      _dropHeightLabel = new Label();
-      _dropHeightLabel.AddToClassList("entity-panel__text");
-      _dropHeightLabel.style.marginTop = 4;
-      _dropHeightLabel.style.marginBottom = 2;
-      _dropHeightLabel.style.backgroundColor = Color.clear;
-      _root.Add(_dropHeightLabel);
+      _dropHeightLabel = _root.Q<Label>("DropHeightLabel");
+      _realFlowLabel = _root.Q<Label>("RealFlowLabel");
+      _flowRateLabel = _root.Q<Label>("EfficiencyLabel");
+      _flowRateSlider = _root.Q<PreciseSlider>("Efficiency");
+      _synchronizeToggle = _root.Q<Toggle>("SynchronizeToggle");
 
-      _realFlowLabel = new Label();
-      _realFlowLabel.AddToClassList("entity-panel__text");
-      _realFlowLabel.style.marginBottom = 10;
-      _realFlowLabel.style.backgroundColor = Color.clear;
-      _root.Add(_realFlowLabel);
-
-      // 3. Recreate the "EfficiencyWrapper" from your UXML exactly as-is
-      VisualElement efficiencyWrapper = new VisualElement();
-      efficiencyWrapper.name = "EfficiencyWrapper";
-      efficiencyWrapper.style.marginTop = 4;
-      efficiencyWrapper.style.marginBottom = 4;
-
-      _flowRateLabel = new Label();
-      _flowRateLabel.name = "EfficiencyLabel";
-      _flowRateLabel.AddToClassList("entity-panel__text");
-      _flowRateLabel.style.marginTop = 6;
-      _flowRateLabel.style.marginBottom = 2;
-      efficiencyWrapper.Add(_flowRateLabel);
-
-      // Instantiate the Custom PreciseSlider natively
-      _flowRateSlider = new PreciseSlider();
-      _flowRateSlider.name = "Efficiency";
       _flowRateSlider.SetValueChangedCallback(SetFlowRate);
       _flowRateSlider.SetStepWithoutNotify(0.01f);
-
-      // Apply the aggressive layout constraints to force the slider track to stretch
-      _flowRateSlider.style.flexGrow = 1f;
-      Slider internalSlider = _flowRateSlider.Q<Slider>();
-      if (internalSlider != null)
-      {
-        internalSlider.style.flexGrow = 1f;
-        internalSlider.style.width = new StyleLength(StyleKeyword.Auto);
-        internalSlider.style.minWidth = 150f;
-      }
-
-      efficiencyWrapper.Add(_flowRateSlider);
-      _root.Add(efficiencyWrapper);
-
-      // 4. Construct the Neighbor Synchronization Toggle Feature
-      _synchronizeToggle = new Toggle
-      {
-        text = _loc.T("Building.CompactWaterTurbine.Synchronize")
-      };
-      _synchronizeToggle.AddToClassList("game-toggle");
-      _synchronizeToggle.AddToClassList("entity-panel__text");
-      _synchronizeToggle.AddToClassList("entity-panel__toggle");
-      _synchronizeToggle.style.marginTop = 10;
-      _synchronizeToggle.style.marginBottom = 4;
       _synchronizeToggle.RegisterValueChangedCallback(ToggleSynchronization);
-      _root.Add(_synchronizeToggle);
 
       _root.ToggleDisplayStyle(visible: false);
       return _root;

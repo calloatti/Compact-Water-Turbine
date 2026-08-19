@@ -110,9 +110,7 @@
   "CompactWaterTurbineParticleControllerSpec": {"AttachmentIds": ["Water"]},
   "Children": {
     "#Finished": {
-      "TimbermeshSpec": {
-        "Model": "Buildings/Power/CompactWaterTurbine/CompactWaterTurbine10.IronTeeth.Model"
-      },
+      "TimbermeshSpec": {"Model": "Buildings/Power/CompactWaterTurbine/CompactWaterTurbine10.IronTeeth.Model"},
       "CollidersSpec": {
         "BoxColliders": [
           {

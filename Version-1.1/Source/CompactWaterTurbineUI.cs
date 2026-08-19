@@ -33,41 +33,17 @@ namespace Calloatti.CompactWaterTurbine
 
     public VisualElement InitializeFragment()
     {
-      _root = _visualElementLoader.LoadVisualElement("Game/EntityPanel/WaterMoverFragment");
+      _root = _visualElementLoader.LoadVisualElement("CompactWaterTurbine/TurbinePanel");
 
-      _root.Q("ToggleWrapper").ToggleDisplayStyle(false);
-
-      _dropHeightLabel = new Label();
-      _dropHeightLabel.AddToClassList("entity-panel__text");
-      _dropHeightLabel.style.marginBottom = 2;
-      _dropHeightLabel.style.backgroundColor = UnityEngine.Color.clear;
-
-      _realFlowLabel = new Label();
-      _realFlowLabel.AddToClassList("entity-panel__text");
-      _realFlowLabel.style.marginBottom = 10;
-      _realFlowLabel.style.backgroundColor = UnityEngine.Color.clear;
-
-      VisualElement efficiencyWrapper = _root.Q<VisualElement>("EfficiencyWrapper");
-
-      efficiencyWrapper.Insert(0, _dropHeightLabel);
-      efficiencyWrapper.Insert(1, _realFlowLabel);
-
+      _dropHeightLabel = _root.Q<Label>("DropHeightLabel");
+      _realFlowLabel = _root.Q<Label>("RealFlowLabel");
       _flowRateLabel = _root.Q<Label>("EfficiencyLabel");
       _flowRateSlider = _root.Q<PreciseSlider>("Efficiency");
+      _synchronizeToggle = _root.Q<Toggle>("SynchronizeToggle");
+
       _flowRateSlider.SetValueChangedCallback(SetFlowRate);
       _flowRateSlider.SetStepWithoutNotify(0.01f);
-
-      _synchronizeToggle = new Toggle
-      {
-        text = _loc.T("Building.CompactWaterTurbine.Synchronize")
-      };
-      _synchronizeToggle.AddToClassList("game-toggle");
-      _synchronizeToggle.AddToClassList("entity-panel__text");
-      _synchronizeToggle.AddToClassList("entity-panel__toggle");
-      _synchronizeToggle.style.marginTop = 10;
       _synchronizeToggle.RegisterValueChangedCallback(ToggleSynchronization);
-
-      efficiencyWrapper.Add(_synchronizeToggle);
 
       _root.ToggleDisplayStyle(visible: false);
       return _root;
@@ -94,26 +70,45 @@ namespace Calloatti.CompactWaterTurbine
       if (_turbine != null)
       {
         float currentHead = _turbine.GetCurrentHead();
-        _dropHeightLabel.text = _loc.T(_dropHeightPhrase, currentHead);
-        _realFlowLabel.text = _loc.T(_realFlowPhrase, _turbine.EffectiveFlowRate);
 
-        _flowRateLabel.text = _loc.T(_flowRatePhrase, _turbine.FlowRate);
-        _flowRateSlider.UpdateValuesWithoutNotify(_turbine.FlowRate, _turbine.MaxFlowRate);
-        _flowRateSlider.SetMarker(_turbine.EffectiveFlowRate);
+        if (_dropHeightLabel != null)
+          _dropHeightLabel.text = _loc.T(_dropHeightPhrase, currentHead);
 
-        _synchronizeToggle.SetValueWithoutNotify(_turbine.IsSynchronized);
+        if (_realFlowLabel != null)
+          _realFlowLabel.text = _loc.T(_realFlowPhrase, _turbine.EffectiveFlowRate);
+
+        if (_flowRateLabel != null)
+          _flowRateLabel.text = _loc.T(_flowRatePhrase, _turbine.FlowRate);
+
+        if (_flowRateSlider != null)
+        {
+          _flowRateSlider.UpdateValuesWithoutNotify(_turbine.FlowRate, _turbine.MaxFlowRate);
+          _flowRateSlider.SetMarker(_turbine.EffectiveFlowRate);
+        }
+
+        if (_synchronizeToggle != null)
+          _synchronizeToggle.SetValueWithoutNotify(_turbine.IsSynchronized);
       }
     }
 
     private void SetFlowRate(float value)
     {
-      _turbine.SetFlowRateAndSynchronize(value);
+      if (_turbine != null)
+      {
+        _turbine.SetFlowRateAndSynchronize(value);
+      }
     }
 
     private void ToggleSynchronization(ChangeEvent<bool> changeEvent)
     {
-      _turbine.ToggleSynchronization(changeEvent.newValue);
-      _flowRateSlider.SetValueWithoutNotify(_turbine.FlowRate);
+      if (_turbine != null)
+      {
+        _turbine.ToggleSynchronization(changeEvent.newValue);
+        if (_flowRateSlider != null)
+        {
+          _flowRateSlider.SetValueWithoutNotify(_turbine.FlowRate);
+        }
+      }
     }
   }
 }

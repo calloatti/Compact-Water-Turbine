@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:cui="Timberborn.CoreUI" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="/Assets/Resources/UI/Views/Core/CoreStyle.uss" />
+    <Style src="/Assets/Resources/UI/Views/Common/CommonStyle.uss" />
+    <Style src="/Assets/Resources/UI/Views/Common/EntityPanel/EntityPanelCommonStyle.uss" />
+    <Style src="/Assets/Resources/UI/Views/Game/EntityPanel/EntityPanelGameStyle.uss" />
+
+    <cui:NineSliceVisualElement name="WaterMoverFragment" class="entity-sub-panel bg-sub-box--green">
+        <ui:Label name="DropHeightLabel" class="entity-panel__text" style="margin-top: 4px; margin-bottom: 2px;" />
+        <ui:Label name="RealFlowLabel" class="entity-panel__text" style="margin-bottom: 10px;" />
+        <ui:VisualElement name="EfficiencyWrapper" class="content-stretched" style="margin-top: 4px; margin-bottom: 4px;">
+            <ui:Label name="EfficiencyLabel" class="entity-panel__text" style="margin-top: 6px; margin-bottom: 2px;" />
+            <cui:PreciseSlider name="Efficiency" class="automation-counter-slider" />
+        </ui:VisualElement>
+        <cui:LocalizableToggle name="SynchronizeToggle" text-loc-key="Building.CompactWaterTurbine.Synchronize" class="game-toggle entity-panel__text entity-panel__toggle" style="margin-top: 10px; margin-bottom: 4px;" />
+    </cui:NineSliceVisualElement>
+</ui:UXML>

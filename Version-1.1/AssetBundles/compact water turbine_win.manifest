@@ -1,0 +1,45 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.5.5f1
+CRC: 1000719853
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: b9472e0407f7ffc87d236a9ec69e8954
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9bc83729e0832e3f6e723ca2461aff2d
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 4455545e671cad3560cdbd95ab036ac0
+HashAppended: 0
+ClassTypes:
+- Class: 114
+  Script: {fileID: 11998, guid: 0000000000000000e000000000000000, type: 0}
+- Class: 114
+  Script: {fileID: 11995, guid: 0000000000000000e000000000000000, type: 0}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Timberborn.CoreUI
+  ClassName: Timberborn.CoreUI.LocalizableToggle/UxmlSerializedData
+- AssemblyName: Timberborn.CoreUI
+  ClassName: Timberborn.CoreUI.NineSliceVisualElement/UxmlSerializedData
+- AssemblyName: Timberborn.CoreUI
+  ClassName: Timberborn.CoreUI.PreciseSlider/UxmlSerializedData
+- AssemblyName: UnityEngine.UIElementsModule
+  ClassName: UnityEngine.UIElements.Label/UxmlSerializedData
+- AssemblyName: UnityEngine.UIElementsModule
+  ClassName: UnityEngine.UIElements.StyleProperty
+- AssemblyName: UnityEngine.UIElementsModule
+  ClassName: UnityEngine.UIElements.StyleRule
+- AssemblyName: UnityEngine.UIElementsModule
+  ClassName: UnityEngine.UIElements.StyleSheets.Dimension
+- AssemblyName: UnityEngine.UIElementsModule
+  ClassName: UnityEngine.UIElements.StyleValueHandle
+- AssemblyName: UnityEngine.UIElementsModule
+  ClassName: UnityEngine.UIElements.VisualElement/UxmlSerializedData
+- AssemblyName: UnityEngine.UIElementsModule
+  ClassName: UnityEngine.UIElements.VisualElementAsset
+Assets:
+- Assets/Mods/Compact Water Turbine/AssetBundles/Resources/UI/Views/CompactWaterTurbine/TurbinePanel.uxml
+Dependencies: []
